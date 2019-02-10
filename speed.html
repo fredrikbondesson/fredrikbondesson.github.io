@@ -1,0 +1,92 @@
+<html>
+<head>
+<!--<script type="text/javascript" src="dygraph-combined.js"></script>-->
+<link rel="stylesheet" href="dygraph.css">
+<link rel="icon" href="dashboard/images/favicon.png" type="image/png" />
+<script type="text/javascript" src="dygraph.min.js"></script>
+<title>Bredbandet hastighet</title>
+</head>
+<body>
+
+<h2 id="networkSpeed">Network Speed1</h2>
+<div id="graphdiv1" style="width:600px; height:300px;"></div>
+
+<script type="text/javascript">
+  g1 = new Dygraph(document.getElementById("graphdiv1"),
+	"data.csv",
+	{
+	 showRangeSelector:false
+	});
+</script>
+
+<h2 id="networkSpeed">Network Speed2</h2>
+
+<p>Uses speedtest-cli (https://github.com/sivel/speedtest-cli) to check speed</p>
+
+<div id="network_speed" style="width:750px; height:350px;"></div>
+<p><b>Display: </b>
+<input type=checkbox id=0 onClick="checkboxChanged(this)" checked>
+<label for="0"> Ping</label>
+<input type=checkbox id=1 onClick="checkboxChanged(this)" checked>
+<label for="1"> Download</label>
+<input type=checkbox id=2 onClick="checkboxChanged(this)" checked>
+<label for="2"> Upload</label>
+<input type=checkbox id=annotate onClick="annotationsChanged(this)" checked>
+<label for="annotate"> Annotations</label>
+</p>
+
+<script type="text/javascript">
+  var annotations = [
+    {
+      series: "Download",
+      x: "2016-02-02 13:27",
+      shortText: "Download",
+      text: "Download",
+      cssClass: 'annotation'
+    },
+    {
+      series: "Ping",
+      x: "2016-02-02 13:27",
+      shortText: "Ping",
+      text: "Ping",
+      cssClass: 'annotation'
+    },
+    {
+      series: "Upload",
+      x: "2016-02-02 13:27",
+      shortText: "Upload",
+      text: "Upload",
+      cssClass: 'annotation'
+    }
+  ];
+
+  stockchart = new Dygraph(
+    document.getElementById('network_speed'),
+    "data.csv",
+    {
+      //showRoller: true,
+      //customBars: true,
+      showRangeSelector:true,
+      labelsKMB: true,
+      drawCallback: function(g, is_initial) {
+        if (!is_initial) return;
+        g.setAnnotations( annotations );
+      }
+    }
+  );
+
+  function checkboxChanged(el) {
+    stockchart.setVisibility(el.id, el.checked);
+  }
+
+  function annotationsChanged(el) {
+    if (el.checked) {
+      stockchart.setAnnotations(annotations);
+    } else {
+      stockchart.setAnnotations([]);
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+﻿<html>
+<head>
+<!--<script type="text/javascript" src="dygraph-combined.js"></script>-->
+<link rel="stylesheet" href="dygraph.css">
+<link rel="icon" href="dashboard/images/favicon.png" type="image/png" />
+<script type="text/javascript" src="dygraph.min.js"></script>
+
+<title>Energi Användning</title>
+</head>
+<body>
+
+<h2 id="energy">Energy</h2>
+<div id="graphdiv1" style="width:600px; height:300px;"></div>
+
+<script type="text/javascript">
+  g1 = new Dygraph(document.getElementById("graphdiv1"),
+	"energy.csv",
+	{
+	 showRangeSelector:true
+	});
+</script>
+
+<h2 id="energy">Energy Monthly(Ellevio)</h2>
+<div id="graphdiv2" style="width:600px; height:300px;"></div>
+
+<script type="text/javascript">
+/* From http://dygraphs.com/tests/plotters.html */
+
+// Darken a color
+      function darkenColor(colorStr) {
+        // Defined in dygraph-utils.js
+        var color = Dygraph.toRGB_(colorStr);
+        color.r = Math.floor((255 + color.r) / 2);
+        color.g = Math.floor((255 + color.g) / 2);
+        color.b = Math.floor((255 + color.b) / 2);
+        return 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+      }
+      
+      // This function draws bars for a single series. See
+      // multiColumnBarPlotter below for a plotter which can draw multi-series
+      // bar charts.
+      function barChartPlotter(e) {
+        var ctx = e.drawingContext;
+        var points = e.points;
+        var y_bottom = e.dygraph.toDomYCoord(0);
+
+        ctx.fillStyle = darkenColor(e.color);
+
+        // Find the minimum separation between x-values.
+        // This determines the bar width.
+        var min_sep = Infinity;
+        for (var i = 1; i < points.length; i++) {
+          //console.log(points[i].canvasx)
+          var sep = points[i].canvasx - points[i - 1].canvasx;
+          //fredbond also check sep != 0
+          if (sep < min_sep & sep != 0) min_sep = sep;
+        }
+        
+        var bar_width = Math.floor(2.0 / 3 * min_sep);
+        // Do the actual plotting.
+        for (var i = 0; i < points.length; i++) {
+          var p = points[i];
+          var center_x = p.canvasx;
+
+          ctx.fillRect(center_x - bar_width / 2, p.canvasy,
+              bar_width, y_bottom - p.canvasy);
+
+          ctx.strokeRect(center_x - bar_width / 2, p.canvasy,
+              bar_width, y_bottom - p.canvasy);
+        }
+      }
+      
+  g2 = new Dygraph(document.getElementById("graphdiv2"),
+	"energy_monthly.csv",
+	{
+	 showRangeSelector:true,
+   plotter: barChartPlotter,
+   includeZero: true,
+   dateWindow: [ Date.parse("2015/08/01"), Date.parse("2018/07/01") ],
+   axes: {
+          x: {
+            drawGrid: true
+          }
+         }
+	});
+</script>
+
+<h2 id="energymonthlycombined">Energy Monthly Combined(Ellevio)</h2>
+<div id="graphdiv3" style="width:600px; height:300px;"></div>
+
+<script type="text/javascript">
+// Multiple column bar chart
+    function multiColumnBarPlotter(e) {
+      // We need to handle all the series simultaneously.
+      if (e.seriesIndex !== 0) return;
+
+      var g = e.dygraph;
+      var ctx = e.drawingContext;
+      var sets = e.allSeriesPoints;
+      var y_bottom = e.dygraph.toDomYCoord(0);
+
+      // Find the minimum separation between x-values.
+      // This determines the bar width.
+      var min_sep = Infinity;
+      for (var j = 0; j < sets.length; j++) {
+        var points = sets[j];
+        for (var i = 1; i < points.length; i++) {
+          var sep = points[i].canvasx - points[i - 1].canvasx;
+          if (sep < min_sep & sep != 0) min_sep = sep;
+        }
+      }
+
+      var bar_width = Math.floor(2.0 / 3 * min_sep);
+      //console.log(bar_width)
+      //bar_width = 20;
+      var fillColors = [];
+      var strokeColors = g.getColors();
+      for (var i = 0; i < strokeColors.length; i++) {
+        fillColors.push(darkenColor(strokeColors[i]));
+      }
+
+      for (var j = 0; j < sets.length; j++) {
+        ctx.fillStyle = fillColors[j];
+        ctx.strokeStyle = strokeColors[j];
+        for (var i = 0; i < sets[j].length; i++) {
+          var p = sets[j][i];
+          var center_x = p.canvasx;
+          var x_left = 10 + center_x - (bar_width / 2) * (1 - j/(sets.length-1));
+
+          ctx.fillRect(x_left, p.canvasy,
+              bar_width/sets.length, y_bottom - p.canvasy);
+
+          ctx.strokeRect(x_left, p.canvasy,
+              bar_width/sets.length, y_bottom - p.canvasy);
+        }
+      }
+    }
+    
+  g3 = new Dygraph(document.getElementById("graphdiv3"),
+	"energy_combined.csv",
+	{
+   plotter: multiColumnBarPlotter,
+	 showRangeSelector:true,
+   dateWindow: [ 0, 13],
+	});
+</script>
+
+</body>
+</html>

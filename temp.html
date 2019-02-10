@@ -1,0 +1,217 @@
+<html>
+
+<head>
+<link rel="stylesheet" href="dygraph.css">
+<link rel="icon" href="dashboard/images/favicon.png" type="image/png" />
+<script type="text/javascript" src="dygraph.min.js"></script>
+<title>Temperatur</title>
+</head>
+<body>
+
+<h2 id="temperature1">Kontor</h2>
+<h4>Inne_kanal5(5637622)</h4>
+<div id="tempdiv1" class="chart" style="width:600px; height:300px;"></div>
+<script type="text/javascript">
+  g1 = new Dygraph(document.getElementById("tempdiv1"),
+	"5637622.csv",
+	{
+	 showRangeSelector:true,
+   //legend: 'always',
+   title: "Kontor",
+   ylabel: 'Temperatur/Luftfuktighet',
+   xlabel: "Tidpunkt",
+   labels: [ "Date", "Temperatur", "Luftfuktighet" ],  
+   strokeWidth: 1.5,
+               xAxisHeight: 14,
+            showRangeSelector: true,
+            rangeSelectorHeight: 80,
+            rangeSelectorPlotStrokeColor: 'purple',
+            rangeSelectorPlotFillColor: 'black',
+            rangeSelectorBackgroundStrokeColor: 'orange',
+            rangeSelectorBackgroundLineWidth: 4,
+            rangeSelectorPlotLineWidth: 5,
+            rangeSelectorForegroundStrokeColor: 'brown',
+            rangeSelectorForegroundLineWidth: 8,
+            rangeSelectorAlpha: 0.5,
+            rangeSelectorPlotFillGradientColor: 'red'
+
+	});
+</script>
+
+<h2 id="temperature4">Utomhus</h2>
+<div id="tempdiv4" style="width:600px; height:300px;"></div>
+
+<script type="text/javascript">
+  g1 = new Dygraph(document.getElementById("tempdiv4"),
+	  "5637624.csv",
+	{
+	 showRangeSelector:true
+	});
+</script>
+
+<h2 id="temperature4">UtomhusMaxMinMedel</h2>
+<div id="tempdivtesting" style="width:600px; height:300px;"></div>
+
+<script type="text/javascript">
+// From https://stackoverflow.com/questions/28615246/dygraph-show-maximum-and-minimum
+// Calculate the min/max y value in the Dygraph's data set.
+function calcMinMax(g) {
+  var ymin = g.getValue(0, 1);
+  var ymax = g.getValue(0, 1)
+  var ymean = 0;
+  for (var i = 0; i < g.numRows(); i++) {
+    //for (var j = 1; j < g.numColumns(); j++) {
+    //for (var j = 1; j < 2; j++) 
+    {
+      j=1;
+      y = g.getValue(i, j);
+      //console.log('AA value ' + i,j,y);
+      ymean+=y;
+      if (y < ymin) {
+        ymin = y;
+      } else if (y > ymax) {
+        ymax = y;
+      }
+    }
+  }
+  console.log('AA');
+  console.log('AA calcMinMax numColumns ' + g.numColumns());
+  console.log('AA calcMinMax numRows ' + g.numRows());
+  ymean = ymean / (g.numRows())
+  console.log('AA1 calcMinMax ymin ymax ymean ' + ymin, ymax, ymean);
+  console.log('AA2 calcMinMax ' + g.xAxisRange());
+  console.log('AA2_1 calcMinMax ' + g.xAxisExtremes());
+  minMaxX = g.xAxisRange();
+  console.log('AA g' + 	g);
+  console.log('AA 	rollPeriod ' + 	g.rollPeriod());
+  
+  //Alt1
+  /*
+  var idx=1; //change this value if you have several plots.
+  var data = g.rawData_;
+  var sum = data.map(function(e){return e[idx]})
+              .reduce(function(a,b){return a+b});
+  var average = sum/data.length;
+  console.log('AA average= ' + average);
+  */
+  //Alt 2
+  /*
+  var idx=1; //change this value if you have several plots.
+  var data = g.rawData_.slice(g.boundaryIds_[idx][0], g.boundaryIds_[idx][1]+1);
+  var sum = data.map(function(e){return e[idx]})
+              .reduce(function(a,b){return a+b});
+  var average = sum/data.length;
+  console.log('AA average= ' + average);
+  */
+  return [ymin, ymax];
+}
+
+function yMeanPlotter(e) {
+        var ctx = e.drawingContext;
+        var points = e.points;
+        var y_bottom = e.dygraph.toDomYCoord(0);
+        ctx.strokeStyle="#FFAA00";
+        y_mean = 0;
+        y_min = 100;
+        y_max = -100;
+        for (var i = 1; i < points.length; i++) {
+          var p1 = points[i-1];
+          var p2 = points[i];
+          ctx.beginPath();
+          ctx.moveTo(p1.canvasx, p1.canvasy);
+          ctx.lineTo(p2.canvasx, p2.canvasy);
+          ctx.stroke();
+          y_mean+=p1.canvasy;
+          if (p1.canvasy < y_min) {
+            y_min = p1.canvasy;
+          } else if (p1.canvasy > y_max) {
+            y_max = p1.canvasy;
+          }
+        }
+        ctx.strokeStyle="blue";
+        ctx.beginPath();
+        p1 = points[0];
+        p2 = points[points.length-1];
+        y_mean = y_mean/points.length;
+        ctx.moveTo(p1.canvasx, y_mean);
+        ctx.lineTo(p2.canvasx, y_mean);
+        ctx.moveTo(p1.canvasx, y_min);
+        ctx.lineTo(p2.canvasx, y_min);
+        ctx.moveTo(p1.canvasx, y_max);
+        ctx.lineTo(p2.canvasx, y_max);
+        ctx.stroke();
+        console.log('AA meanY ' + y_mean);
+        console.log('AA MAX MIN ' + y_max, y_min);
+      }
+      
+  g1 = new Dygraph(document.getElementById("tempdivtesting"),
+	  "5637624.csv",
+                 /*"X,Y,Z\n" +
+                 "2018-03-01,1,1\n" +
+                 "2018-03-02,14,14\n" +
+                 "2018-03-03,4,4\n" +
+                 "2018-03-04,6,6\n" +
+                 "2018-03-05,3,3\n" +
+                 "2018-03-06,11,11\n" +
+                 "2018-03-07,12,12\n" +
+                 "2018-03-08,10,10\n",
+                 */
+	{
+  
+  series: {
+                /*"Z": {
+                  strokeWidth: 1
+                },*/
+                "Temperature": {
+                  plotter: yMeanPlotter
+                }
+           },
+    rollPeriod: 0,
+    showRoller: true,
+	  showRangeSelector:true,
+    //valueRange: [-30,50],
+    //dateWindow: [ Date.parse("2017/01/01"), Date.parse("2019/07/26") ],
+    underlayCallback: function(ctx, area) {
+                       var min_and_max = calcMinMax(this),
+                           ymin = min_and_max[0],
+                           ymax = min_and_max[1],
+                           canvasYmin = this.toDomYCoord(ymin),
+                           canvasYmax = this.toDomYCoord(ymax);
+                       ctx.strokeStyle= 'red';
+                       ctx.beginPath();
+                       ctx.moveTo(area.x, canvasYmin);
+                       ctx.lineTo(area.x + area.w, canvasYmin);
+                       ctx.moveTo(area.x, canvasYmax);
+                       ctx.lineTo(area.x + area.w, canvasYmax);
+                       ctx.closePath();
+                       ctx.stroke();       
+                     }
+	});
+
+</script>
+
+<h2 id="temperature2">Overvaning (Nedervaning)</h2>
+<h4>Temp1_kanal1(2398251)</h4>
+<div id="tempdiv2" style="width:600px; height:300px;"></div>
+
+<script type="text/javascript">
+  g1 = new Dygraph(document.getElementById("tempdiv2"),
+	"2398251.csv",
+	{
+	 showRangeSelector:true
+	});
+</script>
+
+<h2 id="temperature3">Under huset</h2>
+<h4>Temp2_underhuset(4577697)</h4>
+<div id="tempdiv3" style="width:600px; height:300px;"></div>
+
+<script type="text/javascript">
+  g1 = new Dygraph(document.getElementById("tempdiv3"),
+	"4577697.csv",
+	{
+	 showRangeSelector:true
+	});
+</script>
+</body>
+</html>
