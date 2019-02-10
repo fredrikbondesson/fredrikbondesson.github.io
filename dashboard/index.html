@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<link rel="icon" href="images/favicon.png" type="image/png" />
+<style>
+* {
+    box-sizing: border-box;
+    border-radius: 15px;
+    /*box-sizing: initial;*/
+    /*box-sizing: content-box;*/
+    --main-bg-color: #33b5e5;
+
+    /*background-color: #000000;*/
+    /*background-color: #33b5e5;*/ /* blue-ish*/
+    /* background: red; */ /* For browsers that do not support gradients */
+    /*background: linear-gradient(blue, lightblue); *//* Standard syntax (must be last) */
+
+}
+
+/*
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+*/
+[class*="col-"] {
+    float: left;
+    padding: 10px;
+}
+html {
+    font-family: "Lucida Sans", sans-serif;
+}
+.header {
+    background-color: var(--main-bg-color);
+    background: linear-gradient(to bottom, rgba(0,102,255,1), rgba(0,102,255,0.5));
+    /*background: linear-gradient(to bottom, rgba(255,0,0,1), rgba(255,0,0,0));
+    /*background: linear-gradient(blue, yellow);*/
+    color: #ffffff;
+    padding: 15px;
+    text-align: center;
+}
+.menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.menu li {
+    padding: 4px;
+    margin-bottom: 7px;
+    /*background-color: #000000;*/
+    /*background-color: var(--main-bg-color);*/
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.menu li:hover {
+    background-color: #c3c3c3;
+    /*background-color: #0099cc;*/ /* blue-ish*/
+}
+
+.my_block {
+    background-color: var(--main-bg-color);
+    background: linear-gradient(to bottom, rgba(0,102,255,1), rgba(0,102,255,0.5));
+    padding: 1px;
+    color: #ffffff;
+    text-align: center;
+    font-size: 14px;
+    box-shadow: 0 5px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.my_block:hover {
+    background-color: #c3c3c3; /* background-color: #515151; */
+}
+
+.my_button_block {
+    background-color: var(--main-bg-color);
+    background: linear-gradient(to bottom, rgba(0,102,255,1), rgba(0,102,255,0.5));
+    padding: 1px;
+    margin-bottom: 4px;
+    color: #ffffff;
+    text-align: center;
+    font-size: 14px;
+    box-shadow: 0 5px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+/*.footer {
+    background-color: #0099cc;
+    color: #ffffff;
+    text-align: center;
+    font-size: 12px;
+    padding: 15px;
+}
+*/
+.abro_weather:before {
+    background: url("fredbond_icons/abro_weather.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+}
+
+.energy1:before {
+    background: url("fredbond_icons/energy1.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+}
+
+.energy2:before {
+    background: url("fredbond_icons/energy_new.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+}
+
+.ping:before {
+    background: url("fredbond_icons/ping.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+}
+
+.download:before {
+    background: url("fredbond_icons/download_cloud_64.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+}
+
+.upload:before {
+    background: url("fredbond_icons/upload_cloud_64.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+}
+
+/*
+.unnamed:before {
+    background: url("fredbond_icons/unnamed.png") no-repeat scroll center center / 100%;
+}
+
+.unnamed:after {
+    background: url("fredbond_icons/unnamed.png") no-repeat center center / 100%;
+}
+*/
+.lamp_on:before {
+    background: url("fredbond_icons/lamp_on.png") no-repeat scroll center center / 100%;
+}
+
+/*
+.lamp_on:after {
+    background: url("fredbond_icons/temperature.png") no-repeat center center / 100%;
+}
+*/
+
+/*
+.lamp_on:before{
+    background: url("fredbond_icons/lamp_on.png") no-repeat left center / 100%;
+    /*background: url("fredbond_icons/lamp_on.png") no-repeat left,
+                url("fredbond_icons/lamp_off.png") no-repeat center right;* /
+    /*background-image: url(fredbond_icons/lamp_on.png) , url(fredbond_icons/lamp_off.png);
+    background-position: center center / 100%;
+    background-repeat: no-repeat;* /
+    /*padding: 15px;* /
+    /*text-align: middle;* /
+}
+*/
+
+.temperature:before {
+background: url("fredbond_icons/temperature.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+}
+
+.humidity:before {
+background: url("fredbond_icons/humidity.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+}
+
+.door_bell:before {
+    background: url("fredbond_icons/door_bell.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+}
+
+.my_icon:before {
+    content: "";
+    display: inline-block;
+    color: #fff;
+    height: 30px;
+    margin-right: 13px;
+    position: relative;
+    top: -2px;
+    vertical-align: middle;
+    width: 30px;
+}
+
+.wind:before {
+    background: url("fredbond_icons/wind2.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+/*    transform:      rotate(45deg);
+-ms-transform:      rotate(45deg);
+-moz-transform:     rotate(45deg);
+-webkit-transform:  rotate(45deg);
+-o-transform:       rotate(45deg);*/
+}
+
+/*
+http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
+*/
+#on_button,
+#off_button {
+    background-color: var(--main-bg-color);
+    //padding: 1px;
+    color: #ffffff;
+    //text-align: center;
+    //font-size: 14px;
+    //box-shadow: 0 5px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    //display: inline;
+    height: 40px;
+    width: 25%;
+    //color: #000;
+    //font-size: 25px;
+    //text-decoration: none;
+    //line-height: 36px;
+    //box-sizing: border-box;
+    //padding: 1px 0 0 0;
+    //text-align: center;
+    //background-color: #FFA319;
+    //border-radius: 4px;
+    //margin-top: 30px;
+}
+
+#on_button:hover {
+    background-color: #c3c3c3;
+} 
+#off_button:hover {
+    background-color: #c3c3c3;
+}
+
+/* For mobile phones: */
+[class*="col-"] {
+    width: 100%;
+}
+@media only screen and (min-width: 660px) {
+    /* For tablets: */
+    .col-m-1 {width: 8.33%;}
+    .col-m-2 {width: 16.66%;}
+    .col-m-3 {width: 25%;}
+    .col-m-4 {width: 33.33%;}
+    .col-m-5 {width: 41.66%;}
+    .col-m-6 {width: 50%;}
+    .col-m-7 {width: 58.33%;}
+    .col-m-8 {width: 66.66%;}
+    .col-m-9 {width: 75%;}
+    .col-m-10 {width: 83.33%;}
+    .col-m-11 {width: 91.66%;}
+    .col-m-12 {width: 100%;}
+}
+@media only screen and (min-width: 768px) {
+    /* For desktop: */
+    .col-1 {width: 8.33%;}
+    .col-2 {width: 16.66%;}
+    .col-3 {width: 25%;}
+    .col-4 {width: 33.33%;}
+    .col-5 {width: 41.66%;}
+    .col-6 {width: 50%;}
+    .col-7 {width: 58.33%;}
+    .col-8 {width: 66.66%;}
+    .col-9 {width: 75%;}
+    .col-10 {width: 83.33%;}
+    .col-11 {width: 91.66%;}
+    .col-12 {width: 100%;}
+}
+</style>
+    <script>
+    
+    function rotate_wind_icon(deg) {
+      console.log("rotate_wind_icon " + deg);
+      element = document.getElementById('wind_landvetter_icon');
+      element.style.transform = "rotate(" + deg + "deg)";
+    }
+    
+    // From https://stackoverflow.com/questions/18933085/display-text-file-in-javascript
+    // or https://www.w3schools.com/xml/xml_http.asp
+    function populateElementsFromFileUrl(url, string1, element_id1, string2, element_id2, string3, element_id3, string4, element_id4) {
+      var xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        //console.log(this.responseText)
+        var fields = this.responseText.split(',');
+        var field1 = fields[0];
+        //console.log(field1)
+        document.getElementById(element_id1).textContent = string1 + field1;
+        if (element_id2 != null) {
+          var field2 = fields[1];
+          //console.log(field2)
+          document.getElementById(element_id2).textContent = field2 + string2;
+        }
+        if (element_id3 != null) {
+          var field3 = fields[2];
+          //console.log(field3)
+          document.getElementById(element_id3).textContent = field3 + string3;
+        }
+        if (element_id4 != null) {
+          var field4 = fields[3];
+          //console.log(field4)
+          document.getElementById(element_id4).textContent = field4 + string4;
+        }
+      };
+      xhr.open('GET', url);
+      xhr.send();
+    }
+    
+    function populateElementsFromFileUrl2(url, string1, element_id1, string2, element_id2, string3, element_id3, string4, element_id4) {
+      var xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        //console.log(this.responseText)
+        var fields = this.responseText.split(',');
+        var field1 = fields[0];
+        //console.log(field1)
+        document.getElementById(element_id1).textContent = string1 + field1;
+        if (element_id2 != null) {
+          var field2 = fields[1];
+          //console.log(field2)
+          document.getElementById(element_id2).textContent = field2 + string2;
+        }
+        if (element_id3 != null) {
+          var field3 = fields[2];
+          //console.log(field3)
+          document.getElementById(element_id3).textContent = field3 + string3;
+        }
+        if (element_id4 != null) {
+          var field4 = fields[3];
+          document.getElementById(element_id4).textContent = field4 + string4;
+        }
+        
+        rotate_wind_icon(parseInt(field4));
+      };
+      xhr.open('GET', url);
+      xhr.send();
+    }
+    
+    
+    populateElementsFromFileUrl('../data_latest.csv', "Time: ", 'date_speed', " seconds", "ping_speed", " Mbit/s", "download_speed", 
+                                                      " Mbit/s", 'upload_speed');
+    populateElementsFromFileUrl('../energy_latest.csv', "Time: ", 'date_energy', 
+                                " kWh (Nibe)", 'nibe_energy', " kWh (Total)", 'total_energy', null, null);
+    populateElementsFromFileUrl('../5637624_latest.csv', "Time: ", 'date_5637624', " C", "temp_5637624", null, null, null, null);
+    populateElementsFromFileUrl('../4577697_latest.csv', "Time: ", 'date_4577697', " C", "temp_4577697", " %", "humidity_4577697", null, null);
+    populateElementsFromFileUrl('../2398251_latest.csv', "Time: ", 'date_2398251', " C", "temp_2398251", " %", "humidity_2398251", null, null);
+    populateElementsFromFileUrl('../5637622_latest.csv', "Time: ", 'date_5637622', " C", "temp_5637622", " %", "humidity_5637622", null, null);
+    populateElementsFromFileUrl('../abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
+    populateElementsFromFileUrl('../abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
+    populateElementsFromFileUrl2('../landvetter_weather_data_latest.csv', "Time: ", 'date_landvetter', " C", "temp_landvetter", " m/s", "wind_landvetter", "°", "wind_direction_landvetter");
+    
+    </script>
+</head>
+<body>
+
+<div class="header">
+  <h1 id="my_header">:::::Telldus:::::</h1>
+</div>
+
+<div class="row_vet_ej">
+
+<a href="../temp.html#temperature4">
+<div class="col-3 col-m-12">
+  <div class="my_block">
+    <h2>Ute_kanal5(5637624)</h2>
+    <p id="temp_5637624" class="my_icon temperature">N/A C</p>
+    <!-- <p id="humidity_5637624" class="my_icon humidity">44 %</p> -->
+    <p id="date_5637624">Time: N/A</p>
+  </div>
+</div>
+</a>
+
+<a href="../temp.html#temperature1">
+<div class="col-3 col-m-12">
+  <div class="my_block">
+    <h2>Inne_kanal5(5637622)</h2>
+    <p id="temp_5637622" class="my_icon temperature">N/A C</p>
+    <p id="humidity_5637622" class="my_icon humidity">N/A %</p>
+    <p id="date_5637622">Time: N/A</p>
+  </div>
+</div>
+</a>
+
+<a href="../temp.html#temperature2">
+<div class="col-3 col-m-12">
+  <div class="my_block">
+    <h2>Temp1_kanal1(2398251)</h2>
+    <p id="temp_2398251" class="my_icon temperature">N/A C</p>
+    <p id="humidity_2398251" class="my_icon humidity">N/A %</p>
+    <p id="date_2398251">Time: N/A</p>
+  </div>
+</div>
+</a>
+
+<a href="../temp.html#temperature3">
+<div class="col-3 col-m-12">
+  <div class="my_block">
+    <h2>Temp2_underhuset(4577697)</h2>
+    <p id="temp_4577697" class="my_icon temperature">N/A C</p>
+    <p id="humidity_4577697" class="my_icon humidity">N/A %</p>
+    <p id="date_4577697">Time: N/A</p>
+  </div>
+</div>
+</a>
+
+<a href="../energy.html">
+<div class="col-3 col-m-12">
+  <div class="my_block">
+    <h2>Energy</h2>
+    <p id="total_energy" class="my_icon energy2">Total: N/A kWh</p>
+    <p id="nibe_energy" class="my_icon energy2">Nibe: N/A kWh</p>
+    <p id="date_energy">Time: N/A</p>
+  </div>
+</div>
+</a>
+
+<a href="../speed.html">
+<div class="col-3 col-m-12">
+  <div class="my_block">
+    <h2>Speed</h2>
+    <p id="upload_speed" class="my_icon upload">N/A Mbit/s</p>
+    <p id="download_speed" class="my_icon download">N/A Mbit/s</p>
+    <p id="ping_speed" class="my_icon ping">N/A seconds</p>
+    <p id="date_speed" >Time: N/A</p>
+  </div>
+</div>
+</a>
+
+<a href="../abro.html">
+<div class="col-3 col-m-12">
+  <div class="my_block">
+    <h2>Åbro väder</h2>
+    <p id="temp_abroo" class="my_icon temperature">N/A C</p>
+    <p id="humidity_abroo" class="my_icon humidity">N/A %</p>
+    <p id="date_abroo">Time: N/A</p>
+  </div>
+</div>
+</a>
+
+<a href="../abro.html#landvetter">
+<div class="col-3 col-m-12">
+  <div class="my_block">
+    <h2>Landvetter väder</h2>
+    <p id="temp_landvetter" class="my_icon temperature">N/A C</p>
+    <!--<p id="wind_landvetter" class="my_icon wind">N/A m/s</p>
+    <p id="wind_direction_landvetter">N/A °</p>
+    -->
+    <p id="wind_landvetter">N/A m/s</p>
+    <p id="wind_landvetter_icon" class="my_icon wind"></p>
+    <p id="wind_direction_landvetter">N/A °</p>
+    
+    <p id="date_landvetter">Time: N/A</p>
+  </div>
+</div>
+</a>
+
+<!--
+<div class="col-3 col-m-3 menu">
+  <ul>
+    <li class="my_icon lamp_on">Dimmer1 (deviceID=2)</li>
+    <li class="my_icon door_bell">DoorBell (deviceID=8)</li>
+    <li class="my_icon lamp_on">Lampa1 (deviceID=1)</li>
+    <li class="my_icon lamp_on">Lampa2 (deviceID=1)</li>
+    <li class="my_icon lamp_on">Nexa1 (deviceID=1)</li>
+    <li class="my_icon lamp_on">Nexa2 (deviceID=1)</li>
+    <li class="my_icon lamp_on">Nexa3 (deviceID=1)</li>
+    <li class="my_icon lamp_on">Ute1 (deviceID=1)</li>
+  </ul>
+</div>
+-->
+<form action="../php/commands.php?ring_door_bell" method="post" id="door_bell_on_form">
+</form>
+
+<form action="../php/commands.php?turn_on_lamp_673068" method="post" id="lamp_on_form">
+</form>
+
+<form action="../php/commands.php?turn_off_lamp_673068" method="post" id="lamp_off_form">
+</form>
+
+<div class="col-3 col-m-3">
+  <div class="my_button_block">
+    <a>Doorbell</a>
+    <button id="on_button" type="submit" form="door_bell_on_form">Ring</button>
+  </div>
+  <div class="my_button_block">
+    <a>Vardrum1(675389)</a>
+    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_675389">Turn On</button>
+    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_675389">Turn Off</button>
+  </div>  
+  <div class="my_button_block">
+    <a>Vardrum2(675390)</a>
+    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_675390">Turn On</button>
+    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_675390">Turn Off</button>
+  </div>
+    <div class="my_button_block">
+    <a>Vardrum3(3015089)</a>
+    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_3015089">Turn On</button>
+    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_3015089">Turn Off</button>
+  </div>
+  <div class="my_button_block">
+    <a>Kontor(673068)</a>
+    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_673068">Turn On</button>
+    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_673068">Turn Off</button>
+  </div>
+  <div class="my_button_block">
+    <a>Ute(2871639)</a>
+    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_2871639">Turn On</button>
+    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_2871639">Turn Off</button>
+  </div>
+  <div class="my_button_block">
+    <a>Kök(3015075)</a>
+    <button  id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_3015075">Turn On</button>
+    <button  id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_3015075">Turn Off</button>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
