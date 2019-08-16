@@ -1,0 +1,29 @@
+﻿<html>
+<head>
+<!--<script type="text/javascript" src="dygraph-combined.js"></script>-->
+<link rel="stylesheet" href="dygraph.css">
+<link rel="icon" href="dashboard/images/favicon.png" type="image/png" />
+<script type="text/javascript" src="dygraph.min.js"></script>
+<title>SMHI nederbörd Kållered</title>
+</head>
+<body>
+
+<a href="https://www.smhi.se/klimatdata/meteorologi/ladda-ner-meteorologiska-observationer/#param=precipitation24HourSum,stations=all,stationid=72360">SMHI OpenData Kållered stationd id 72360</a>
+<br>
+
+<h2 id="abro_title">Nederbörd Kållered</h2>
+<div id="graphdiv1" style="width:600px; height:300px;"></div>
+
+<script type="text/javascript">
+  g1 = new Dygraph(document.getElementById("graphdiv1"),
+	"smhi_opendata_kallered_72360.csv",
+	{
+	 showRangeSelector:true,
+   title: "Nederbörd",
+   ylabel: 'mm',
+   xlabel: "Tidpunkt",
+	});
+</script>
+
+</body>
+</html>
