@@ -181,6 +181,14 @@ background: url("fredbond_icons/humidity.png") no-repeat scroll center center / 
 -o-transform:       rotate(45deg);*/
 }
 
+.check_mark:before {
+background: url("fredbond_icons/check_mark.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+}
+
+.uncheck_mark:before {
+background: url("fredbond_icons/uncheck_mark.png") no-repeat scroll center center / 100% auto rgba(0, 0, 0, 0);
+}
+
 /*
 http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
 */
@@ -249,8 +257,9 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
     .col-12 {width: 100%;}
 }
 </style>
-    <script>
-    
+  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+  <script>
+ 
     function rotate_wind_icon(deg) {
       console.log("rotate_wind_icon " + deg);
       element = document.getElementById('wind_landvetter_icon');
@@ -329,6 +338,38 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
     populateElementsFromFileUrl('../abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
     populateElementsFromFileUrl2('../landvetter_weather_data_latest.csv', "Time: ", 'date_landvetter', " C", "temp_landvetter", " m/s", "wind_landvetter", "°", "wind_direction_landvetter");
     
+    /*From https://api.jquery.com/jQuery.getJSON/*/
+    (function() {
+
+      var jsonApi = "http://fredrikbond.eu.pythonanywhere.com/get_latest";
+      $.getJSON( jsonApi, {
+        json: "true"
+      })
+      .done(function( data ) {
+            console.log(data);
+            $.each( data, function( i, item ) {
+              console.log(i);
+              console.log(item[0]);
+              console.log(item[1]);
+              console.log(Date.now())
+              console.log(Date.parse(item[1]))
+              icon = "check_mark";
+              millis = 1000;
+              time_delta_24hrs = 24 * 60 * 60 * millis;
+              if (Date.now() - Date.parse(item[1]) > time_delta_24hrs)
+              {
+                icon = "uncheck_mark";
+              }
+              $("#ping_result").append("<div class=\"col-3 col-m-12\">" +
+                                        "<div class=\"my_block\">" +
+                                        "<h2>" + item[0] + "</h2>" +
+                                        "<p class=\"my_icon "+ icon + "\">" + item[1] +"</p>"+
+                                        "</div>" +
+                                      "</div>")
+            });
+          });
+      })();
+
     </script>
 </head>
 <body>
@@ -336,169 +377,172 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
 <div class="header">
   <h1 id="my_header">:::::Telldus:::::</h1>
 </div>
-
-<div class="row_vet_ej">
-
-<a href="../temp.html#temperature4">
-<div class="col-3 col-m-12">
-  <div class="my_block">
-    <h2>Ute_kanal5(5637624)</h2>
-    <p id="temp_5637624" class="my_icon temperature">N/A C</p>
-    <!-- <p id="humidity_5637624" class="my_icon humidity">44 %</p> -->
-    <p id="date_5637624">Time: N/A</p>
-  </div>
-</div>
-</a>
-
-<a href="../temp.html#temperature1">
-<div class="col-3 col-m-12">
-  <div class="my_block">
-    <h2>Inne_kanal5(5637622)</h2>
-    <p id="temp_5637622" class="my_icon temperature">N/A C</p>
-    <p id="humidity_5637622" class="my_icon humidity">N/A %</p>
-    <p id="date_5637622">Time: N/A</p>
-  </div>
-</div>
-</a>
-
-<a href="../temp.html#temperature2">
-<div class="col-3 col-m-12">
-  <div class="my_block">
-    <h2>Temp1_kanal1(2398251)</h2>
-    <p id="temp_2398251" class="my_icon temperature">N/A C</p>
-    <p id="humidity_2398251" class="my_icon humidity">N/A %</p>
-    <p id="date_2398251">Time: N/A</p>
-  </div>
-</div>
-</a>
-
-<a href="../temp.html#temperature3">
-<div class="col-3 col-m-12">
-  <div class="my_block">
-    <h2>Temp2_underhuset(4577697)</h2>
-    <p id="temp_4577697" class="my_icon temperature">N/A C</p>
-    <p id="humidity_4577697" class="my_icon humidity">N/A %</p>
-    <p id="date_4577697">Time: N/A</p>
-  </div>
-</div>
-</a>
-
-<a href="../energy.html">
-<div class="col-3 col-m-12">
-  <div class="my_block">
-    <h2>Energy</h2>
-    <p id="total_energy" class="my_icon energy2">Total: N/A kWh</p>
-    <p id="nibe_energy" class="my_icon energy2">Nibe: N/A kWh</p>
-    <p id="date_energy">Time: N/A</p>
-  </div>
-</div>
-</a>
-
-<a href="../speed.html">
-<div class="col-3 col-m-12">
-  <div class="my_block">
-    <h2>Speed</h2>
-    <p id="upload_speed" class="my_icon upload">N/A Mbit/s</p>
-    <p id="download_speed" class="my_icon download">N/A Mbit/s</p>
-    <p id="ping_speed" class="my_icon ping">N/A seconds</p>
-    <p id="date_speed" >Time: N/A</p>
-  </div>
-</div>
-</a>
-
-<a href="../abro.html">
-<div class="col-3 col-m-12">
-  <div class="my_block">
-    <h2>Åbro väder</h2>
-    <p id="temp_abroo" class="my_icon temperature">N/A C</p>
-    <p id="humidity_abroo" class="my_icon humidity">N/A %</p>
-    <p id="date_abroo">Time: N/A</p>
-  </div>
-</div>
-</a>
-
-<a href="../abro.html#landvetter">
-<div class="col-3 col-m-12">
-  <div class="my_block">
-    <h2>Landvetter väder</h2>
-    <p id="temp_landvetter" class="my_icon temperature">N/A C</p>
-    <!--<p id="wind_landvetter" class="my_icon wind">N/A m/s</p>
-    <p id="wind_direction_landvetter">N/A °</p>
-    -->
-    <p id="wind_landvetter">N/A m/s</p>
-    <p id="wind_landvetter_icon" class="my_icon wind"></p>
-    <p id="wind_direction_landvetter">N/A °</p>
-    
-    <p id="date_landvetter">Time: N/A</p>
-  </div>
-</div>
-</a>
-
 <!--
-<div class="col-3 col-m-3 menu">
-  <ul>
-    <li class="my_icon lamp_on">Dimmer1 (deviceID=2)</li>
-    <li class="my_icon door_bell">DoorBell (deviceID=8)</li>
-    <li class="my_icon lamp_on">Lampa1 (deviceID=1)</li>
-    <li class="my_icon lamp_on">Lampa2 (deviceID=1)</li>
-    <li class="my_icon lamp_on">Nexa1 (deviceID=1)</li>
-    <li class="my_icon lamp_on">Nexa2 (deviceID=1)</li>
-    <li class="my_icon lamp_on">Nexa3 (deviceID=1)</li>
-    <li class="my_icon lamp_on">Ute1 (deviceID=1)</li>
-  </ul>
+<div class="row_vet_ej">
+-->
+  <a href="../temp.html#temperature4">
+  <div class="col-3 col-m-12">
+    <div class="my_block">
+      <h2>Ute_kanal5(5637624)</h2>
+      <p id="temp_5637624" class="my_icon temperature">N/A C</p>
+      <!-- <p id="humidity_5637624" class="my_icon humidity">44 %</p> -->
+      <p id="date_5637624">Time: N/A</p>
+    </div>
+  </div>
+  </a>
+
+  <a href="../temp.html#temperature1">
+  <div class="col-3 col-m-12">
+    <div class="my_block">
+      <h2>Inne_kanal5(5637622)</h2>
+      <p id="temp_5637622" class="my_icon temperature">N/A C</p>
+      <p id="humidity_5637622" class="my_icon humidity">N/A %</p>
+      <p id="date_5637622">Time: N/A</p>
+    </div>
+  </div>
+  </a>
+
+  <a href="../temp.html#temperature2">
+  <div class="col-3 col-m-12">
+    <div class="my_block">
+      <h2>Temp1_kanal1(2398251)</h2>
+      <p id="temp_2398251" class="my_icon temperature">N/A C</p>
+      <p id="humidity_2398251" class="my_icon humidity">N/A %</p>
+      <p id="date_2398251">Time: N/A</p>
+    </div>
+  </div>
+  </a>
+
+  <a href="../temp.html#temperature3">
+  <div class="col-3 col-m-12">
+    <div class="my_block">
+      <h2>Temp2_underhuset(4577697)</h2>
+      <p id="temp_4577697" class="my_icon temperature">N/A C</p>
+      <p id="humidity_4577697" class="my_icon humidity">N/A %</p>
+      <p id="date_4577697">Time: N/A</p>
+    </div>
+  </div>
+  </a>
+
+  <a href="../energy.html">
+  <div class="col-3 col-m-12">
+    <div class="my_block">
+      <h2>Energy</h2>
+      <p id="total_energy" class="my_icon energy2">Total: N/A kWh</p>
+      <p id="nibe_energy" class="my_icon energy2">Nibe: N/A kWh</p>
+      <p id="date_energy">Time: N/A</p>
+    </div>
+  </div>
+  </a>
+
+  <a href="../speed.html">
+  <div class="col-3 col-m-12">
+    <div class="my_block">
+      <h2>Speed</h2>
+      <p id="upload_speed" class="my_icon upload">N/A Mbit/s</p>
+      <p id="download_speed" class="my_icon download">N/A Mbit/s</p>
+      <p id="ping_speed" class="my_icon ping">N/A seconds</p>
+      <p id="date_speed" >Time: N/A</p>
+    </div>
+  </div>
+  </a>
+
+  <a href="../abro.html">
+  <div class="col-3 col-m-12">
+    <div class="my_block">
+      <h2>Åbro väder</h2>
+      <p id="temp_abroo" class="my_icon temperature">N/A C</p>
+      <p id="humidity_abroo" class="my_icon humidity">N/A %</p>
+      <p id="date_abroo">Time: N/A</p>
+    </div>
+  </div>
+  </a>
+
+  <a href="../abro.html#landvetter">
+  <div class="col-3 col-m-12">
+    <div class="my_block">
+      <h2>Landvetter väder</h2>
+      <p id="temp_landvetter" class="my_icon temperature">N/A C</p>
+      <!--<p id="wind_landvetter" class="my_icon wind">N/A m/s</p>
+      <p id="wind_direction_landvetter">N/A °</p>
+      -->
+      <p id="wind_landvetter">N/A m/s</p>
+      <p id="wind_landvetter_icon" class="my_icon wind"></p>
+      <p id="wind_direction_landvetter">N/A °</p>
+      
+      <p id="date_landvetter">Time: N/A</p>
+    </div>
+  </div>
+  </a>
+
+  <form action="../php/commands.php?ring_door_bell" method="post" id="door_bell_on_form">
+  </form>
+
+  <form action="../php/commands.php?turn_on_lamp_673068" method="post" id="lamp_on_form">
+  </form>
+
+  <form action="../php/commands.php?turn_off_lamp_673068" method="post" id="lamp_off_form">
+  </form>
+ 
+  <div id="ping_result"">
+    <!-- Is popopulated by the json result in scripts part -->
+  </div>
+
+  <div class="col-2">
+    <div class="my_button_block">
+      <a href="https://www.kalleredidag.se/">Kållered Idag</a>
+    </div>
+  </div>    
+  <div class="col-3">
+    <div class="my_button_block">
+      <a>Doorbell</a>
+      <button id="on_button" type="submit" form="door_bell_on_form">Ring</button>
+    </div>
+  </div>
+  <div class="col-3">
+    <div class="my_button_block">
+      <a>Vardrum1(675389)</a>
+      <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_675389">Turn On</button>
+      <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_675389">Turn Off</button>
+    </div>
+  </div>
+  <div class="col-3">
+    <div class="my_button_block">
+      <a>Vardrum2(675390)</a>
+      <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_675390">Turn On</button>
+      <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_675390">Turn Off</button>
+    </div>
+  </div>
+  <div class="col-3">    
+      <div class="my_button_block">
+      <a>Vardrum3(3015089)</a>
+      <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_3015089">Turn On</button>
+      <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_3015089">Turn Off</button>
+    </div>
+  </div>
+  <div class="col-3">    
+    <div class="my_button_block">
+      <a>Kontor(673068)</a>
+      <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_673068">Turn On</button>
+      <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_673068">Turn Off</button>
+    </div>
+  </div>
+  <div class="col-3">    
+    <div class="my_button_block">
+      <a>Ute(2871639)</a>
+      <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_2871639">Turn On</button>
+      <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_2871639">Turn Off</button>
+    </div>
+  </div>
+  <div class="col-3">    
+    <div class="my_button_block">
+      <a>Kök(3015075)</a>
+      <button  id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_3015075">Turn On</button>
+      <button  id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_3015075">Turn Off</button>
+    </div>
+  </div>
+<!--
 </div>
 -->
-<form action="../php/commands.php?ring_door_bell" method="post" id="door_bell_on_form">
-</form>
-
-<form action="../php/commands.php?turn_on_lamp_673068" method="post" id="lamp_on_form">
-</form>
-
-<form action="../php/commands.php?turn_off_lamp_673068" method="post" id="lamp_off_form">
-</form>
-
-  
-<div class="col-3 col-m-3">
-<div class="my_button_block">
-    <a href="https://www.kalleredidag.se/">Kållered Idag</a>
-  </div>
-  
-  <div class="my_button_block">
-    <a>Doorbell</a>
-    <button id="on_button" type="submit" form="door_bell_on_form">Ring</button>
-  </div>
-  <div class="my_button_block">
-    <a>Vardrum1(675389)</a>
-    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_675389">Turn On</button>
-    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_675389">Turn Off</button>
-  </div>  
-  <div class="my_button_block">
-    <a>Vardrum2(675390)</a>
-    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_675390">Turn On</button>
-    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_675390">Turn Off</button>
-  </div>
-    <div class="my_button_block">
-    <a>Vardrum3(3015089)</a>
-    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_3015089">Turn On</button>
-    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_3015089">Turn Off</button>
-  </div>
-  <div class="my_button_block">
-    <a>Kontor(673068)</a>
-    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_673068">Turn On</button>
-    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_673068">Turn Off</button>
-  </div>
-  <div class="my_button_block">
-    <a>Ute(2871639)</a>
-    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_2871639">Turn On</button>
-    <button id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_2871639">Turn Off</button>
-  </div>
-  <div class="my_button_block">
-    <a>Kök(3015075)</a>
-    <button  id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_on_lamp_3015075">Turn On</button>
-    <button  id="on_button" type="submit" form="lamp_on_form" formmethod="post" formaction="../php/commands.php?turn_off_lamp_3015075">Turn Off</button>
-  </div>
-</div>
-
-</div>
 </body>
 </html>
