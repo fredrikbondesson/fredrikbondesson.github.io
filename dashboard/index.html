@@ -353,6 +353,9 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
               console.log(item[1]);
               console.log(Date.now())
               console.log(Date.parse(item[1]))
+
+              localtime = new Date(Date.parse(item[1]));
+              localTimeStr = localtime.toLocaleString('se-SE');
               icon = "check_mark";
               millis = 1000;
               time_delta_24hrs = 24 * 60 * 60 * millis;
@@ -363,7 +366,7 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
               $("#ping_result").append("<div class=\"col-3 col-m-12\">" +
                                         "<div class=\"my_block\">" +
                                         "<h2>" + item[0] + "</h2>" +
-                                        "<p class=\"my_icon "+ icon + "\">" + item[1] +"</p>"+
+                                        "<p class=\"my_icon "+ icon + "\">" + localTimeStr +"</p>"+
                                         "</div>" +
                                       "</div>")
             });
