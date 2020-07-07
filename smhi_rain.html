@@ -5,6 +5,13 @@
 <link rel="icon" href="dashboard/images/favicon.png" type="image/png" />
 <script type="text/javascript" src="dygraph.min.js"></script>
 <title>SMHI nederbörd Kållered</title>
+
+<style>
+  #my_table                { border-collapse: collapse; text-align: center; width: 100%; }
+  #my_table th             { background: #8aa3f8; font-weight: bold; font-size: 100%}
+  #my_table td             { width: 8%; border: 1px solid #cccccc; overflow: hidden; font-size: 100%; }
+</style>
+
 </head>
 <body>
 
@@ -14,15 +21,361 @@
 <h2 id="abro_title">Nederbörd Kållered</h2>
 <div id="graphdiv1" style="width:600px; height:300px;"></div>
 
+<br>
+<br>
+
+<select id="select_position_dropdown" onchange="position_changed()" style="width: 120px; height: 25px">
+  <option value="kallered" selected>Kållered</option>
+  <option value="goteborg">Göteborg</option>
+</select>
+
+<div>
+  <div id="graphdiv" style="width:600px; height:300px;"></div>
+</div>
+<br>
+<br>
+<div>
+  <select id="select_year_dropdown" onchange="year_changed()" style="width: 120px; height: 25px">
+  </select>
+
+  <span id="info">&nbsp;</span>
+
+  <table id=my_table style="width:50%;">
+  </table>
+
+</div>
+
+<br>
+<br>
+<span id="debug_info">&nbsp;</span>
+<br>
+<br>
+
 <script type="text/javascript">
-  g1 = new Dygraph(document.getElementById("graphdiv1"),
-	"smhi_opendata_kallered_72360.csv",
-	{
-	 showRangeSelector:true,
-   title: "Nederbörd",
-   ylabel: 'mm',
-   xlabel: "Tidpunkt",
-	});
+function get_storage_size(){
+        // From https://stackoverflow.com/questions/4391575/how-to-find-the-size-of-localstorage
+        var allStrings = '';
+        for(var key in window.localStorage){
+            if(window.localStorage.hasOwnProperty(key)){
+                allStrings += window.localStorage[key];
+            }
+        }
+        return allStrings ? 3 + ((allStrings.length*16)/(8*1024)) + ' KB' : 'Empty (0 KB)';
+    }
+
+    function format_with_two_characters(month) {
+        if (month<10){
+            return "0" + month;
+        }
+        return month;
+    }
+    
+    function position_changed() {
+        elem = document.getElementById("select_position_dropdown");
+        var position = elem.value;
+
+        populate_local_storage_for_position(position);
+
+        year_changed();
+
+        create_rain_year_dynagraph();
+    }
+
+    function year_changed() {
+        elem = document.getElementById("select_year_dropdown");
+        year = elem.value;
+
+        create_rain_year_html_table(year);
+    }
+
+    function populate_year_dropdown() {
+        var rightNow = new Date();
+        var currYear = rightNow.getFullYear();
+
+        var opts = '';
+
+        for (var year=currYear; year>=1995; year--)
+            opts += `<option value=${year}>${year}`;
+
+        dropdown = document.getElementById("select_year_dropdown");
+        dropdown.innerHTML = opts;
+        dropdown.value = currYear;
+    }
+
+    function round(value, decimals) {
+        // From https://www.jacklmoore.com/notes/rounding-in-javascript/
+        return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+    }
+
+    function show_info(year)
+    {
+        var year_total = round(localStorage.getItem(year), 1);
+        info_elem = document.getElementById("info");
+        var location = "Kållered";
+        if (localStorage.getItem('position') == 'kallered') {
+          location = "Kållered"
+        } else {
+          location = "Göteborg"
+        }
+        info_elem.innerHTML = `<b>${location} ${year}, totalt ${year_total} mm</b>`
+    }
+
+    function get_html_for_sum(sum_months) {
+        var html = "<tr id=\"sum\">\
+                    <th>SUM</th>";
+
+        for (var month=1; month<=12; month++) {
+            value = round(sum_months[month], 1);
+            html += "<th>" + value + "</th>";
+        }
+        html += "</tr>"
+
+        return html;
+    }
+
+    function create_html_for_year(year) {
+        var html = "";
+        var year_total = 0;
+        var month_sums = {1:0.0, 2:0.0, 3:0.0, 4:0.0, 5:0.0, 6:0.0, 7:0.0, 8:0.0, 9:0.0, 10:0.0, 11:0.0, 12:0.0};
+        for (var day=1; day<=31; day++) {
+            html += "<tr id=\"d" + day + "\">";
+            html += "<th>" + day +"</th>\r\n";
+            for (var month=1; month<=12; month++) {
+                key = year + "-" + format_with_two_characters(month) + "-" + format_with_two_characters(day);
+                var value = localStorage.getItem(key)
+                
+                if (value) {
+                    month_sums[month] += parseFloat(value);
+                    if (value == 0) {
+                        value = "";
+                    }
+                    html += "<td data-pcp=\"" + value + "\">" + value + "</td>";
+                } else {
+                    html += "<td data-pcp=\"-1\">x</td>";
+                }
+
+            }
+            html += "</tr>";
+        }
+
+        html += get_html_for_sum(month_sums);
+        show_info(year);
+
+        return html;
+    }
+
+    // This function draws bars for a single series. See
+    // multiColumnBarPlotter below for a plotter which can draw multi-series
+    // bar charts.
+    function barChartPlotter(e) {
+        var ctx = e.drawingContext;
+        var points = e.points;
+        var y_bottom = e.dygraph.toDomYCoord(0);
+
+        ctx.fillStyle = darkenColor(e.color);
+
+        // Find the minimum separation between x-values.
+        // This determines the bar width.
+        var min_sep = Infinity;
+        for (var i = 1; i < points.length; i++) {
+          //console.log(points[i].canvasx)
+          var sep = points[i].canvasx - points[i - 1].canvasx;
+          //fredbond also check sep != 0
+          if (sep < min_sep & sep != 0) min_sep = sep;
+        }
+        
+        var bar_width = Math.floor(2.0 / 3 * min_sep);
+        // Do the actual plotting.
+        for (var i = 0; i < points.length; i++) {
+          var p = points[i];
+          var center_x = p.canvasx;
+
+          ctx.fillRect(center_x - bar_width / 2, p.canvasy,
+              bar_width, y_bottom - p.canvasy);
+
+          ctx.strokeRect(center_x - bar_width / 2, p.canvasy,
+              bar_width, y_bottom - p.canvasy);
+        }
+    }
+
+      function darkenColor(colorStr) {
+        // Defined in dygraph-utils.js
+        var color = Dygraph.toRGB_(colorStr);
+        color.r = Math.floor((255 + color.r) / 2);
+        color.g = Math.floor((255 + color.g) / 2);
+        color.b = Math.floor((255 + color.b) / 2);
+        return 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+      }
+
+    /*function get_rain_precipitation_per_year() {
+        localStorage.getItem(date);
+    }*/
+
+    function get_rain_per_year_as_array() {
+        var rightNow = new Date();
+        var currYear = rightNow.getFullYear();
+        var year_precipitation = [];
+        year_precipitation.push([1994, 0]);
+        for (var year=1995; year<=currYear; year++) {
+            var value = localStorage.getItem(year);
+            year_precipitation.push([year, parseFloat(value)])
+        }
+        next_year = currYear + 1;
+        year_precipitation.push([next_year, 0]);
+        return year_precipitation;
+    }
+    
+    function create_rain_year_dynagraph() {
+        clear_element("graphdiv");
+        var year_precipitation = get_rain_per_year_as_array();
+        console.log(year_precipitation);
+
+        g = new Dygraph(document.getElementById("graphdiv"),
+              year_precipitation,
+              {
+                labels: [ "År", "Nederbörd" ],
+                showRangeSelector:true,
+                plotter: barChartPlotter,
+                includeZero: true,
+                colors: ["rgb(138, 163, 248)"],
+                width: 840,
+                height: 280,
+                title: 'Nederbörd',
+                xlabel: 'År',
+                ylabel: 'mm',
+                axes: {
+                        x: {
+                            drawGrid: true
+                        }
+                    }
+              }
+        );
+    }
+
+    function clear_element(id) {
+        var elem = document.getElementById(id);
+        elem.innerText = "";
+    }
+
+    function create_rain_year_html_table(year) {
+        clear_element('my_table');
+
+        var table_head_html = '<thead>\
+                <tr> <th>&nbsp;</th> <th>Jan</th> <th>Feb</th> <th>Mar</th> <th>Apr</th>\
+                <th>Maj</th> <th>Jun</th> <th>Jul</th> <th>Aug</th>\
+                <th>Sep</th> <th>Okt</th> <th>Nov</th> <th>Dec</th> </tr>\
+            </thead>'
+
+        document.getElementById('my_table').innerHTML += table_head_html;
+        var table_content_html = create_html_for_year(year);
+        document.getElementById('my_table').innerHTML += table_content_html;
+
+    }
+
+    function parse_file_and_populate_local_storage() {
+        var content = this.responseText.split('\r\n');
+        if (content.length == 1) { // Probably linux file
+            content = this.responseText.split('\n');
+        }
+        var index=0;
+        var year_total = {}
+
+        for (index = 1; index < content.length; ++index) {
+            var date_value = content[index].split(',')
+            if (date_value.length == 1) {
+              //date_value = content[index].split(';')
+            }
+            if (date_value != "" || date_value != null) {
+                var date = date_value[0];
+                var value = date_value[1];            
+
+                var current_value = localStorage.getItem(date);
+
+                year = date.substring(0, 4);
+                if (year) {
+                    if (year_total[year]) {
+                        year_total[year] += parseFloat(value);
+                    } else {
+                        year_total[year] = parseFloat(value);
+                    }
+                }
+                if (year==2019 && date>"2019-11-01") {
+                  console.log(date + " " + value + " " + date_value);
+                  console.log(parseFloat(value));
+                }
+
+                if (current_value == null || parseFloat(value) != current_value)
+                {
+                    localStorage.setItem(date, parseFloat(value));
+                }
+            }
+        }
+
+        for(var year in year_total) {
+            var value = year_total[year];
+            localStorage.setItem(year, parseFloat(value));
+            console.log("For year " + year + " set " + value);
+        }
+
+        show_debug_info();
+
+        // How did this work before?
+        //localStorage.setItem('position', position);
+    }
+
+    function show_debug_info(){
+        var localStorageSpace = get_storage_size();
+        console.log("localStorageSpace=" + localStorageSpace);
+        debug_elem = document.getElementById("debug_info");
+        debug_elem.innerHTML = `Data Size: ${localStorageSpace}`
+    }
+
+    function clear_local_storage_if_needed(position) {
+        last_position = localStorage.getItem('position')
+        if (last_position != position) {
+            localStorage.clear()
+            console.log("Localstorage cleared since changed from " + last_position + " to " + position);
+        } else {
+            console.log('Same position -> No Clear');
+        }
+    }
+
+    function get_file_url_for_position(position) {
+        file_url = "smhi_opendata_kallered_72360.csv";
+        if (position == "kallered") {
+            file_url = "smhi_opendata_kallered_72360.csv";
+        } else {
+            file_url = "smhi_opendata_goteborg_71420.csv";
+        }
+
+        return file_url;
+    }
+
+    function populate_local_storage_for_position(position) {
+        file_url = get_file_url_for_position(position);
+        clear_local_storage_if_needed(position);
+
+        var xhr = new XMLHttpRequest();
+        xhr.onload = parse_file_and_populate_local_storage;
+        let async = false; // Make XMLHttpRequest synchronous, TODO this is deprecated
+        xhr.open('GET', file_url, async);
+        xhr.send();
+
+        localStorage.setItem('position', position);
+    }
+
+    g1 = new Dygraph(document.getElementById("graphdiv1"),
+	    "smhi_opendata_kallered_72360.csv",
+      {
+      showRangeSelector:true,
+      title: "Nederbörd",
+      ylabel: 'mm',
+      xlabel: "Tidpunkt",
+      });
+
+    populate_year_dropdown();
+    position_changed();
+
 </script>
 
 </body>
