@@ -326,7 +326,7 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
     }
     
     
-    populateElementsFromFileUrl('../data_latest.csv', "Time: ", 'date_speed', " seconds", "ping_speed", " Mbit/s", "download_speed", 
+    populateElementsFromFileUrl('../data_latest.csv', "Time: ", 'date_speed', " milliseconds", "ping_speed", " Mbit/s", "download_speed", 
                                                       " Mbit/s", 'upload_speed');
     populateElementsFromFileUrl('../energy_latest.csv', "Time: ", 'date_energy', 
                                 " kWh (Nibe)", 'nibe_energy', " kWh (Total)", 'total_energy', null, null);
@@ -358,8 +358,9 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
               localTimeStr = localtime.toLocaleString('se-SE');
               icon = "check_mark";
               millis = 1000;
-              time_delta_24hrs = 24 * 60 * 60 * millis;
-              if (Date.now() - Date.parse(item[1]) > time_delta_24hrs)
+              //time_delta_24hrs = 24 * 60 * 60 * millis;
+              time_delta_one_hour = 1 * 60 * 60 * millis;
+              if (Date.now() - Date.parse(item[1]) > time_delta_one_hour)
               {
                 icon = "uncheck_mark";
               }
@@ -495,6 +496,10 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
   <div class="col-2">
     <div class="my_button_block">
       <a href="https://www.kalleredidag.se/">Kållered Idag</a>
+      <br>
+      <a href="https://api.trafikinfo.trafikverket.se/v1/Images/TrafficFlowCamera_39635270.Jpeg?type=fullsize&maxage=30">Kållered Norrut</a>
+      <br>
+      <a href="https://api.trafikinfo.trafikverket.se/v1/Images/TrafficFlowCamera_39635273.Jpeg?type=fullsize&maxage=30">Kållered Söderut</a>
     </div>
   </div>    
   <div class="col-3">
