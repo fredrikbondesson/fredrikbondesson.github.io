@@ -14,7 +14,7 @@
 
 <script type="text/javascript">
   g1 = new Dygraph(document.getElementById("graphdiv1"),
-	"energy.csv",
+	"data/energy.csv",
 	{
 	 showRangeSelector:true
 	});
@@ -71,7 +71,7 @@
       }
       
   g2 = new Dygraph(document.getElementById("graphdiv2"),
-	"energy_monthly.csv",
+	"data/energy_monthly.csv",
 	{
 	 showRangeSelector:true,
    plotter: barChartPlotter,
@@ -137,7 +137,7 @@
     }
     
   g3 = new Dygraph(document.getElementById("graphdiv3"),
-	"energy_combined.csv",
+	"data/energy_combined.csv",
 	{
    plotter: multiColumnBarPlotter,
 	 showRangeSelector:true,

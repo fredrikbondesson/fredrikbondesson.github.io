@@ -341,11 +341,11 @@ function get_storage_size(){
     }
 
     function get_file_url_for_position(position) {
-        file_url = "smhi_opendata_kallered_72360.csv";
+        file_url = "data/smhi_opendata_kallered_72360.csv";
         if (position == "kallered") {
-            file_url = "smhi_opendata_kallered_72360.csv";
+            file_url = "data/smhi_opendata_kallered_72360.csv";
         } else {
-            file_url = "smhi_opendata_goteborg_71420.csv";
+            file_url = "data/smhi_opendata_goteborg_71420.csv";
         }
 
         return file_url;
@@ -365,7 +365,7 @@ function get_storage_size(){
     }
 
     g1 = new Dygraph(document.getElementById("graphdiv1"),
-	    "smhi_opendata_kallered_72360.csv",
+	    "data/smhi_opendata_kallered_72360.csv",
       {
       showRangeSelector:true,
       title: "Nederbörd",

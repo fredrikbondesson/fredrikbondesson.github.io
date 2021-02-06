@@ -338,18 +338,18 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
     }
     
     
-    populateElementsFromFileUrl('../data_latest.csv', "Time: ", 'date_speed', " milliseconds", "ping_speed", " Mbit/s", "download_speed", 
+    populateElementsFromFileUrl('../data/data_latest.csv', "Time: ", 'date_speed', " milliseconds", "ping_speed", " Mbit/s", "download_speed", 
                                                       " Mbit/s", 'upload_speed');
-    populateElementsFromFileUrl('../energy_latest.csv', "Time: ", 'date_energy', 
+    populateElementsFromFileUrl('../data/energy_latest.csv', "Time: ", 'date_energy', 
                                 " kWh (Nibe)", 'nibe_energy', " kWh (Total)", 'total_energy', null, null);
-    populateElementsFromFileUrl('../5637624_latest.csv', "Time: ", 'date_5637624', " C", "temp_5637624", null, null, null, null);
-    populateElementsFromFileUrl('../4577697_latest.csv', "Time: ", 'date_4577697', " C", "temp_4577697", " %", "humidity_4577697", null, null);
-    populateElementsFromFileUrl('../2398251_latest.csv', "Time: ", 'date_2398251', " C", "temp_2398251", " %", "humidity_2398251", null, null);
-    populateElementsFromFileUrl('../5637622_latest.csv', "Time: ", 'date_5637622', " C", "temp_5637622", " %", "humidity_5637622", null, null);
-    //populateElementsFromFileUrl('../abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
-    //populateElementsFromFileUrl('../abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
-    populateElementsFromFileUrl2('../abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", " m/s", "wind_abroo", "°", "wind_direction_abroo");
-    populateElementsFromFileUrl2('../landvetter_weather_data_latest.csv', "Time: ", 'date_landvetter', " C", "temp_landvetter", null, null, " m/s", "wind_landvetter", "°", "wind_direction_landvetter");
+    populateElementsFromFileUrl('../data/5637624_latest.csv', "Time: ", 'date_5637624', " C", "temp_5637624", null, null, null, null);
+    populateElementsFromFileUrl('../data/4577697_latest.csv', "Time: ", 'date_4577697', " C", "temp_4577697", " %", "humidity_4577697", null, null);
+    populateElementsFromFileUrl('../data/2398251_latest.csv', "Time: ", 'date_2398251', " C", "temp_2398251", " %", "humidity_2398251", null, null);
+    populateElementsFromFileUrl('../data/5637622_latest.csv', "Time: ", 'date_5637622', " C", "temp_5637622", " %", "humidity_5637622", null, null);
+    //populateElementsFromFileUrl('../data/abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
+    //populateElementsFromFileUrl('../data/abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
+    populateElementsFromFileUrl2('../data/abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", " m/s", "wind_abroo", "°", "wind_direction_abroo");
+    populateElementsFromFileUrl2('../data/landvetter_weather_data_latest.csv', "Time: ", 'date_landvetter', " C", "temp_landvetter", null, null, " m/s", "wind_landvetter", "°", "wind_direction_landvetter");
     
     /*From https://api.jquery.com/jQuery.getJSON/*/
     (function() {
