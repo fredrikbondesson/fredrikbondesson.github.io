@@ -260,9 +260,10 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
   <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
   <script>
  
-    function rotate_wind_icon(deg) {
-      console.log("rotate_wind_icon " + deg);
-      element = document.getElementById('wind_landvetter_icon');
+    function rotate_wind_icon(deg, element_id) {
+      console.log("rotate_wind_icon " + element_id + " " + deg);
+      //element = document.getElementById('wind_landvetter_icon');
+      element = document.getElementById(element_id);
       element.style.transform = "rotate(" + deg + "deg)";
     }
     
@@ -296,30 +297,41 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
       xhr.send();
     }
     
-    function populateElementsFromFileUrl2(url, string1, element_id1, string2, element_id2, string3, element_id3, string4, element_id4) {
+    function populateElementsFromFileUrl2(url, string1, element_id1, string2, element_id2, string3, element_id3, string4, element_id4, string5, element_id5) {
       var xhr = new XMLHttpRequest();
       xhr.onload = function () {
         //console.log(this.responseText)
         var fields = this.responseText.split(',');
-        var field1 = fields[0];
+        var field1 = fields[0];   // Datestring
         //console.log(field1)
         document.getElementById(element_id1).textContent = string1 + field1;
         if (element_id2 != null) {
-          var field2 = fields[1];
+          var field2 = fields[1];  // Temp
           //console.log(field2)
           document.getElementById(element_id2).textContent = field2 + string2;
         }
-        if (element_id3 != null) {
+        if (element_id3 != null) {  // Humidity
           var field3 = fields[2];
           //console.log(field3)
           document.getElementById(element_id3).textContent = field3 + string3;
         }
-        if (element_id4 != null) {
+        if (element_id4 != null) { // Wind speed
           var field4 = fields[3];
           document.getElementById(element_id4).textContent = field4 + string4;
         }
         
-        rotate_wind_icon(parseInt(field4));
+        if (element_id5 != null) { // Wind direction
+          var field5 = fields[4];
+          document.getElementById(element_id5).textContent = field5 + string5;
+        }
+        
+        // Wind direction icon
+        console.log("element_id5=" + element_id5);
+        if (element_id5.includes('landvetter')) {
+          rotate_wind_icon(parseInt(field5), 'wind_landvetter_icon');
+        } else  {
+        rotate_wind_icon(parseInt(field5), 'wind_abroo_icon');
+        }
       };
       xhr.open('GET', url);
       xhr.send();
@@ -334,9 +346,10 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
     populateElementsFromFileUrl('../4577697_latest.csv', "Time: ", 'date_4577697', " C", "temp_4577697", " %", "humidity_4577697", null, null);
     populateElementsFromFileUrl('../2398251_latest.csv', "Time: ", 'date_2398251', " C", "temp_2398251", " %", "humidity_2398251", null, null);
     populateElementsFromFileUrl('../5637622_latest.csv', "Time: ", 'date_5637622', " C", "temp_5637622", " %", "humidity_5637622", null, null);
-    populateElementsFromFileUrl('../abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
-    populateElementsFromFileUrl('../abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
-    populateElementsFromFileUrl2('../landvetter_weather_data_latest.csv', "Time: ", 'date_landvetter', " C", "temp_landvetter", " m/s", "wind_landvetter", "°", "wind_direction_landvetter");
+    //populateElementsFromFileUrl('../abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
+    //populateElementsFromFileUrl('../abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
+    populateElementsFromFileUrl2('../abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", " m/s", "wind_abroo", "°", "wind_direction_abroo");
+    populateElementsFromFileUrl2('../landvetter_weather_data_latest.csv', "Time: ", 'date_landvetter', " C", "temp_landvetter", null, null, " m/s", "wind_landvetter", "°", "wind_direction_landvetter");
     
     /*From https://api.jquery.com/jQuery.getJSON/*/
     (function() {
@@ -457,6 +470,11 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
       <h2>Åbro väder</h2>
       <p id="temp_abroo" class="my_icon temperature">N/A C</p>
       <p id="humidity_abroo" class="my_icon humidity">N/A %</p>
+      
+      <p id="wind_abroo">N/A m/s</p>
+      <p id="wind_abroo_icon" class="my_icon wind"></p>
+      <p id="wind_direction_abroo">N/A °</p>
+      
       <p id="date_abroo">Time: N/A</p>
     </div>
   </div>

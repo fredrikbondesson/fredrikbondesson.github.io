@@ -39,6 +39,21 @@
 	});
 </script>
 
+<h2 id="abro_title">Vaderstation Abro - Wind</h2>
+<h5 id="">Timestamp, Wind, Wind Direction</>
+<h6 id="">(0 - from north, 90°	from east, 180 from south)</>
+<div id="graphdiv_wind" style="width:600px; height:300px;"></div>
+
+<script type="text/javascript">
+  g1 = new Dygraph(document.getElementById("graphdiv_wind"),
+	"wind_abroo_weather_data.csv",
+	{
+	 showRangeSelector:true,
+   title: "Wind",
+   xlabel: "Tidpunkt",
+	});
+</script>
+
 <h2 id="abro_all_title">Vaderstation Abro All</h2>
 <h5 id="">Timestamp,Temperature,Humidity,TEMPERATURE_ROAD,RAIN,MAX,MIN</h5>
 <div id="graphdiv2" style="width:600px; height:300px;"></div>
