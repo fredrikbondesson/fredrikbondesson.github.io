@@ -6,6 +6,13 @@
 <script type="text/javascript" src="dygraph.min.js"></script>
 
 <title>Energi Användning</title>
+
+<style>
+  #my_table                { border-collapse: collapse; text-align: center; width: 10%; }
+  #my_table th             { background: #8aa3f8; font-weight: bold; font-size: 100%}
+  #my_table td             { width: 8%; border: 1px solid #cccccc; overflow: hidden; font-size: 100%; }
+</style>
+
 </head>
 <body>
 
@@ -22,6 +29,7 @@
 
 <h2 id="energy">Energy Monthly(Ellevio)</h2>
 <div id="graphdiv2" style="width:600px; height:300px;"></div>
+
 
 <script type="text/javascript">
 /* From http://dygraphs.com/tests/plotters.html */
@@ -87,6 +95,13 @@
 
 <h2 id="energymonthlycombined">Energy Monthly Combined(Ellevio)</h2>
 <div id="graphdiv3" style="width:600px; height:300px;"></div>
+<br>
+<br>
+
+<table id=my_table style="width:50%;">
+</table>
+<br>
+<br>
 
 <script type="text/javascript">
 // Multiple column bar chart
@@ -143,6 +158,104 @@
 	 showRangeSelector:true,
    dateWindow: [ 0, 13],
 	});
+
+  function get_as_dict(data)
+    {
+      // There is no built in dictionary in javascript(?)
+      var dict = new Object(); // Can also be dict = {}
+      var start_year=-1;
+      var end_year=-1;
+
+      for (index = 1; index < data.length; ++index)
+        {
+        var date_value = data[index].split(',')
+        // "2015-09-30", "1944"
+        if (date_value != "" || date_value != null) 
+          {
+            var date = date_value[0];
+            let tmp = date.split('-');
+            let year = parseInt(tmp[0]);
+            if (start_year == -1) {start_year = year;}
+            end_year = year;
+            let month = parseInt(tmp[1]);
+            var value = parseFloat(date_value[1]);
+            if (isNaN(dict[year+'total']))
+            {
+              dict[year+'total'] = 0;
+            }
+            dict[year + month.toString()] = value;
+            dict[year+'total'] = dict[year+'total'] + value;
+          }
+        }
+        console.log('Returning ' + dict + start_year + end_year)
+        return {
+          dict,
+          start_year,
+          end_year
+        };
+    }
+
+    function generate_html_tables() 
+    {
+      var elem = document.getElementById('my_table');
+      if (elem.innerText == "") 
+      {
+        var content = this.responseText.split('\r\n');
+        if (content.length == 1) 
+        { // Probably linux file
+            content = this.responseText.split('\n');
+        }
+        var index=0;
+        
+        var table_head_html = 
+            '<thead>\
+                <tr> <th>Year</th> <th>Jan</th> <th>Feb</th> <th>Mar</th> <th>Apr</th>\
+                <th>Maj</th> <th>Jun</th> <th>Jul</th> <th>Aug</th>\
+                <th>Sep</th> <th>Okt</th> <th>Nov</th> <th>Dec</th> <th>Summa (kWh)</> </tr>\
+            </thead>'
+        var table_content_html = "";
+
+        var { dict, start_year, end_year } = get_as_dict(content);
+        //console.log(dict)
+        let year = start_year;
+        //console.log(start_year, end_year);
+        while (year <= end_year)
+        {
+          table_content_html += "<tr>";
+          table_content_html += "<th>" + year.toString() + "</th>";
+          //console.log(year.toString())
+          for (var month=1; month<=12; month++) 
+          {
+            let value = dict[year.toString()+month.toString()]
+            //console.log(year.toString(), month.toString(), value);
+            if (value)
+            {
+              table_content_html += "<td>" + value + "</td>";
+            } 
+            else 
+            {
+              table_content_html += "<td>x</td>";
+            }
+          }
+          value = dict[year+'total']
+          table_content_html += "<th>" + value + "</th>";
+          table_content_html += "</tr>";
+          year += 1;
+        }
+        //console.log(table_content_html)
+        document.getElementById('my_table').innerHTML += table_head_html;
+        document.getElementById('my_table').innerHTML += table_content_html;
+      }
+    }
+
+    var file_url = "data/energy_monthly.csv";
+
+    var xhr = new XMLHttpRequest();
+    xhr.onload = generate_html_tables;
+    let async = false; // Make XMLHttpRequest synchronous, TODO this is deprecated
+    xhr.open('GET', file_url, async);
+    xhr.send();
+    
 </script>
 
 </body>
