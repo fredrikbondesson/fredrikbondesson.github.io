@@ -11,6 +11,11 @@
   #my_table                { border-collapse: collapse; text-align: center; width: 10%; }
   #my_table th             { background: #8aa3f8; font-weight: bold; font-size: 100%}
   #my_table td             { width: 8%; border: 1px solid #cccccc; overflow: hidden; font-size: 100%; }
+
+  #my_table_cost                { border-collapse: collapse; text-align: center; width: 10%; }
+  #my_table_cost th             { background: #8aa3f8; font-weight: bold; font-size: 100%}
+  #my_table_cost td             { width: 8%; border: 1px solid #cccccc; overflow: hidden; font-size: 100%; }
+
 </style>
 
 </head>
@@ -98,8 +103,14 @@
 <br>
 <br>
 
+<h3>Table kwh</h3>
 <table id=my_table style="width:50%;">
 </table>
+
+<h3>Table kr</h3>
+<table id=my_table_cost style="width:50%;">
+</table>
+
 <br>
 <br>
 
@@ -179,6 +190,11 @@
             end_year = year;
             let month = parseInt(tmp[1]);
             var value = parseFloat(date_value[1]);
+
+            if (date_value.length > 2) {
+              value = value + parseFloat(date_value[2]);
+            }
+
             if (isNaN(dict[year+'total']))
             {
               dict[year+'total'] = 0;
@@ -187,7 +203,10 @@
             dict[year+'total'] = dict[year+'total'] + value;
           }
         }
+
         console.log('Returning ' + dict + start_year + end_year)
+        // console.log(JSON.stringify(dict))
+
         return {
           dict,
           start_year,
@@ -197,7 +216,10 @@
 
     function generate_html_tables() 
     {
-      var elem = document.getElementById('my_table');
+      table_id = this.extraInfo;
+      console.log(table_id)
+
+      var elem = document.getElementById(table_id);
       if (elem.innerText == "") 
       {
         var content = this.responseText.split('\r\n');
@@ -243,18 +265,29 @@
           year += 1;
         }
         //console.log(table_content_html)
-        document.getElementById('my_table').innerHTML += table_head_html;
-        document.getElementById('my_table').innerHTML += table_content_html;
+
+        document.getElementById(table_id).innerHTML += table_head_html;
+        document.getElementById(table_id).innerHTML += table_content_html;
       }
     }
 
     var file_url = "data/energy_monthly.csv";
 
     var xhr = new XMLHttpRequest();
+    xhr.extraInfo = "my_table"
     xhr.onload = generate_html_tables;
     let async = false; // Make XMLHttpRequest synchronous, TODO this is deprecated
     xhr.open('GET', file_url, async);
     xhr.send();
+
+    var file_url2 = "data/energy_cost.csv";
+
+    var xhr2 = new XMLHttpRequest();
+    xhr2.extraInfo = "my_table_cost"
+    xhr2.onload = generate_html_tables;
+    // let async = false; // Make XMLHttpRequest synchronous, TODO this is deprecated
+    xhr2.open('GET', file_url2, async);
+    xhr2.send();
     
 </script>
 
