@@ -29,6 +29,8 @@ def show_statistics(file_name, filter_syntax):
             else:
                 values.append(float(temp))
 
+    print(f'Filename {file_name}')
+    print(f'Nr of samples {len(values)}')
     print(f'min {min(values)}')
     print(f'max {max(values)}')
     print(f'mean {statistics.mean(values)}')

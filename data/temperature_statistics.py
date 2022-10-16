@@ -15,15 +15,20 @@ def show_statistics(file_name, filter_syntax):
         except ValueError:
             date, temp, humidity = lines[0].strip().split(',')
             nr_of_args = 3
-
+        idx = 0
         for line in lines:
+            idx += 1
             if nr_of_args == 2:
-                date, temp = line.strip().split(',')
+                try:
+                    date, temp = line.strip().split(',')
+                except ValueError as e:
+                    print(f"Could not parse row nr {idx}: {line}")
+                    raise e
             else:
                 try:
                     date, temp, humidity = line.strip().split(',')
                 except ValueError:
-                    print(f'ValueError={line}')
+                    print(f'ValueError on row nr {idx}: {line}')
             if filter_syntax:
                 if date.startswith(filter_syntax):
                     values.append(float(temp))

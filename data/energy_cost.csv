@@ -1,4 +1,4 @@
-#Date, Kostnad/månad # From  and https://minasidor.jamtkraft.se/#fakturor # https://www.ellevio.se/privat/mina-sidor/fakturor/
+#Date, Kostnad/månad, elprisstod # From  and https://minasidor.jamtkraft.se/#fakturor # https://www.ellevio.se/privat/mina-sidor/fakturor/, sista kolumnen elprisstodet (https://www.ellevio.se/privat/energismart/elskolan/hur-funkar-elpriskompensationen/)
 2015-09-30,117,999
 2015-10-31,118,1000
 2015-11-30,556,613
@@ -74,11 +74,13 @@
 2021-09-30,683,748
 2021-10-28,659,748
 2021-11-29,1026,1064
-2021-12-28,3287,1064
-2022-01-31,1439,951
-2022-02-28,878,951
+2021-12-28,3287,1064, 700
+2022-01-31,1439,951, 200
+2022-02-28,878,951, 100
 2022-03-28,1325,309
 2022-04-28,735,309
 2022-05-30,640,562
-2022-06-30,796,562
-2022-07-31,523,0
+2022-06-30,796,562, 200
+2022-07-31,523,659
+2022-08-31,1480,660
+2022-09-30,1154,643
