@@ -228,7 +228,7 @@ function get_storage_size(){
     function create_rain_year_dynagraph() {
         clear_element("graphdiv");
         var year_precipitation = get_rain_per_year_as_array();
-        console.log(year_precipitation);
+        //console.log(year_precipitation);
 
         g = new Dygraph(document.getElementById("graphdiv"),
               year_precipitation,
@@ -279,7 +279,8 @@ function get_storage_size(){
         }
         var index=0;
         var year_total = {}
-
+        console.log("------------------------------------------")
+        console.log(content)
         for (index = 1; index < content.length; ++index) {
             var date_value = content[index].split(',')
             if (date_value.length == 1) {
@@ -299,10 +300,6 @@ function get_storage_size(){
                         year_total[year] = parseFloat(value);
                     }
                 }
-                if (year==2019 && date>"2019-11-01") {
-                  console.log(date + " " + value + " " + date_value);
-                  console.log(parseFloat(value));
-                }
 
                 if (current_value == null || parseFloat(value) != current_value)
                 {
@@ -314,7 +311,7 @@ function get_storage_size(){
         for(var year in year_total) {
             var value = year_total[year];
             localStorage.setItem(year, parseFloat(value));
-            console.log("For year " + year + " set " + value);
+            //console.log("For year " + year + " set " + value);
         }
 
         show_debug_info();
