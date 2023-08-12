@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Trafik Info</title>
+  <meta charset="UTF-8">
+  <link rel="icon" href="images/favicon.png" type="image/png" />
+
+  <style type="text/css">
+    * {
+      --main-bg-color: #333e48;
+    }
+
+    body {
+      background: #333e48;
+      color: #ffffff;
+    }
+
+    a {
+      color: white;
+    }
+
+    a:link {
+      color: white
+    }
+
+    a:visited {
+      color: white
+    }
+
+    .header {
+      background-color: var(--main-bg-color);
+      /*background: linear-gradient(to bottom, rgb(87, 32, 199), rgb(8, 4, 230));*/
+      /*background: linear-gradient(to bottom, rgb(38, 36, 42), rgba(0, 0, 0, 1.0));*/
+      background: linear-gradient(to top, #333e48, rgba(0, 0, 0, 0.5));
+      color: #ffffff;
+      padding: 15px;
+      font-family: Calibri;
+      /*font-size: 24px;*/
+      text-align: center;
+      border-radius: 15px;
+    }
+
+    /* Use # for ids and . for classes */
+    .my_frame {
+      width: 1280px;
+      height: 720px;
+      /*padding: 20px*/
+    }
+
+    .my_div {
+      padding: 10px;
+    }
+
+    @media only screen and (min-width: 1081px) {
+
+      /* For desktop: */
+      .col-1 {
+        width: 8.33%;
+      }
+
+      .col-2 {
+        width: 16.66%;
+      }
+
+      .col-3 {
+        width: 25%;
+      }
+
+      .col-4 {
+        width: 33.33%;
+      }
+
+      .col-5 {
+        width: 41.66%;
+      }
+
+      .col-6 {
+        width: 50%;
+      }
+
+      .col-7 {
+        width: 58.33%;
+      }
+
+      .col-8 {
+        width: 66.66%;
+      }
+
+      .col-9 {
+        width: 75%;
+      }
+
+      .col-10 {
+        width: 83.33%;
+      }
+
+      .col-11 {
+        width: 91.66%;
+      }
+
+      .col-12 {
+        width: 100%;
+      }
+    }
+
+    @media only screen and (max-width: 1080px) {
+
+      /* For mobile phones: */
+      [class*="col-"] {
+        width: 100%;
+      }
+    }
+  </style>
+
+</head>
+
+
+<body>
+  <div class="header">
+    <h1 id="my_header">Trafikinfo</h1>
+  </div>
+
+  <div class="col-2">
+    <div class="my_button_block">
+      <a
+        href="https://avgangstavla.vasttrafik.se/?source=vasttrafikse-depatureboardlinkgenerator&stopAreaGid=9021014012610000">Kållered
+        Station(Västtrafik)</a>
+      <br>
+      <a
+        href="https://avgangstavla.vasttrafik.se/?source=vasttrafikse-depatureboardlinkgenerator&stopAreaGid=9021014012620000">Södra
+        Kyrkvägen(Västtrafik)</a>
+      <br>
+      <a href="https://www.trafikverket.se/trafikinformation/tag/?Station=K%C3%A5llered&ArrDep=departure">Tåg
+        Kållered</a>
+    </div>
+  </div>
+
+  <br>
+  <div>
+    <iframe id="inlineFrameExample" title="Kållered Station" width="100%" height="500"
+      src="https://avgangstavla.vasttrafik.se/?source=vasttrafikse-depatureboardlinkgenerator&stopAreaGid=9021014012610000">
+    </iframe>
+  </div>
+
+  <div>
+    <iframe id="inlineFrameExample" title="Södra Kyrkvägen" width="100%" height="500"
+      src="https://avgangstavla.vasttrafik.se/?source=vasttrafikse-depatureboardlinkgenerator&stopAreaGid=9021014012620000">
+    </iframe>
+  </div>
+
+  <div class="col-2">
+    <div class="my_button_block">
+      <a
+        href="https://api.trafikinfo.trafikverket.se/v2/Images/TrafficFlowCamera_39635900.Jpeg?type=fullsize&maxage=30">Torrekullamotet
+        Södra Norrut</a>
+      <br>
+      <a
+        href="https://api.trafikinfo.trafikverket.se/v2/Images/TrafficFlowCamera_39635901.Jpeg?type=fullsize&maxage=30">Torrekullamotet
+        Södra Söderut</a>
+      <br>
+      <a
+        href="https://api.trafikinfo.trafikverket.se/v2/Images/TrafficFlowCamera_39636190.Jpeg?type=fullsize&maxage=30">Kållered
+        Norrut</a>
+      <br>
+      <a
+        href="https://api.trafikinfo.trafikverket.se/v2/Images/TrafficFlowCamera_39636191.Jpeg?type=fullsize&maxage=30">Kållered
+        Söderut</a>
+      <br>
+      <a
+        href="https://api.trafikinfo.trafikverket.se/v2/Images/TrafficFlowCamera_39635270.Jpeg?type=fullsize&maxage=30">Kålleredsmotet
+        Norrut</a>
+      <br>
+      <a
+        href="https://api.trafikinfo.trafikverket.se/v2/Images/TrafficFlowCamera_39635273.Jpeg?type=fullsize&maxage=30">Kålleredsmotet
+        Söderut</a>
+      <br>
+      <!--
+      <a href="https://www.trafikverket.se/trafikinformation/tag/?Station=K%C3%A5llered&ArrDep=departure">Tåg
+        Kållered</a>
+      <br>
+      <a
+        href="https://avgangstavla.vasttrafik.se/?source=vasttrafikse-depatureboardlinkgenerator&stopAreaGid=9021014012610000">Kållered
+        Station(Västtrafik)</a>
+      <br>
+      <a
+        href="https://avgangstavla.vasttrafik.se/?source=vasttrafikse-depatureboardlinkgenerator&stopAreaGid=9021014012620000">Södra
+        Kyrkvägen(Västtrafik)</a>
+      -->
+    </div>
+  </div>
+
+  <section>
+    <div class="my_div">
+      <iframe class="my_frame" title="KålleredsMotet Norrut"
+        src="https://api.trafikinfo.trafikverket.se/v2/Images/TrafficFlowCamera_39635270.Jpeg?type=fullsize&maxage=30">
+      </iframe>
+    </div>
+    <div class="my_div">
+      <iframe title="KålleredsMotet Söderut" class="my_frame"
+        src="https://api.trafikinfo.trafikverket.se/v2/Images/TrafficFlowCamera_39635273.Jpeg?type=fullsize&maxage=30">
+      </iframe>
+    </div>
+
+    <div class="my_div">
+      <iframe title="Kållered Norrut" class="my_frame"
+        src="https://api.trafikinfo.trafikverket.se/v2/Images/TrafficFlowCamera_39636190.Jpeg?type=fullsize&maxage=30">
+      </iframe>
+    </div>
+
+    <div class="my_div">
+      <iframe title="Kållered Söderut" class="my_frame"
+        src="https://api.trafikinfo.trafikverket.se/v2/Images/TrafficFlowCamera_39636191.Jpeg?type=fullsize&maxage=30">
+      </iframe>
+    </div>
+  </section>
+</body>
+
+</html>
