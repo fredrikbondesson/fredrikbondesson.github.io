@@ -1,0 +1,499 @@
+<!doctype html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="dygraph_2.2.1/dygraph.css">
+    <link rel="icon" href="dashboard/images/favicon.png" type="image/png" />
+    <script type="text/javascript" src="dygraph_2.2.1/dygraph.min.js"></script>
+    <title>Temperatur</title>
+
+    <style>
+        #my_table {
+            border-collapse: collapse;
+            text-align: center;
+            width: 100%;
+        }
+
+        #my_table th {
+            background: #8aa3f8;
+            font-weight: bold;
+            font-size: 100%
+        }
+
+        #my_table td {
+            width: 8%;
+            border: 1px solid #cccccc;
+            overflow: hidden;
+            font-size: 100%;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h2>Utomhus (Max/Min)</h2>
+    <div id="utomhus_temp2" style="width:90%; height:300px;"></div>
+
+    <!--table id=my_table style="width:70%;"-->
+    <table id=my_table style="width:98%;">
+    </table>
+
+    <h2>Utomhus</h2>
+    <div id="utomhus_temp" style="width:90%; height:300px;"></div>
+
+    <script type="text/javascript">
+        g1 = new Dygraph(document.getElementById("utomhus_temp"),
+            "data/5637624.csv",
+            {
+                //showRangeSelector: true
+                resizable: "both",
+            });
+    </script>
+
+    <h2>UtomhusMaxMinMedel</h2>
+    <div id="utomhus_temp_max_min_medel" style="width:90%; height:300px;"></div>
+
+    <br>
+    <br>
+    <span id="debug_info">&nbsp;</span>
+    <br>
+    <br>
+
+    <script type="text/javascript">
+
+        // TODO When do we clear?
+        localStorage.clear()
+
+        populate_local_storage_for_position();
+
+        // From https://stackoverflow.com/questions/28615246/dygraph-show-maximum-and-minimum
+        // Calculate the min/max y value in the Dygraph's data set.
+        function calcMinMax(g) {
+            var ymin = g.getValue(0, 1);
+            var ymax = g.getValue(0, 1)
+            var ymean = 0;
+            for (var i = 0; i < g.numRows(); i++) {
+                //for (var j = 1; j < g.numColumns(); j++) {
+                //for (var j = 1; j < 2; j++) 
+                {
+                    j = 1;
+                    y = g.getValue(i, j);
+                    //console.log('AA value ' + i,j,y);
+                    ymean += y;
+                    if (y < ymin) {
+                        ymin = y;
+                    } else if (y > ymax) {
+                        ymax = y;
+                    }
+                }
+            }
+            // console.log('AA');
+            // console.log('AA calcMinMax numColumns ' + g.numColumns());
+            // console.log('AA calcMinMax numRows ' + g.numRows());
+            ymean = ymean / (g.numRows())
+            // console.log('AA1 calcMinMax ymin ymax ymean ' + ymin, ymax, ymean);
+            // console.log('AA2 calcMinMax ' + g.xAxisRange());
+            // console.log('AA2_1 calcMinMax ' + g.xAxisExtremes());
+            minMaxX = g.xAxisRange();
+            // console.log('AA g' + g);
+            // console.log('AA 	rollPeriod ' + g.rollPeriod());
+
+            return [ymin, ymax];
+        }
+
+        function yMeanPlotter(e) {
+            var ctx = e.drawingContext;
+            var points = e.points;
+            var y_bottom = e.dygraph.toDomYCoord(0);
+            ctx.strokeStyle = "#FFAA00";
+            y_mean = 0;
+            y_min = 100;
+            y_max = -100;
+            for (var i = 1; i < points.length; i++) {
+                var p1 = points[i - 1];
+                var p2 = points[i];
+                ctx.beginPath();
+                ctx.moveTo(p1.canvasx, p1.canvasy);
+                ctx.lineTo(p2.canvasx, p2.canvasy);
+                ctx.stroke();
+                y_mean += p1.canvasy;
+                if (p1.canvasy < y_min) {
+                    y_min = p1.canvasy;
+                } else if (p1.canvasy > y_max) {
+                    y_max = p1.canvasy;
+                }
+            }
+            ctx.strokeStyle = "blue";
+            ctx.beginPath();
+            p1 = points[0];
+            p2 = points[points.length - 1];
+            y_mean = y_mean / points.length;
+            ctx.moveTo(p1.canvasx, y_mean);
+            ctx.lineTo(p2.canvasx, y_mean);
+            ctx.moveTo(p1.canvasx, y_min);
+            ctx.lineTo(p2.canvasx, y_min);
+            ctx.moveTo(p1.canvasx, y_max);
+            ctx.lineTo(p2.canvasx, y_max);
+            ctx.stroke();
+            console.log('AA meanY ' + y_mean);
+            console.log('AA MAX MIN ' + y_max, y_min);
+        }
+
+        g1 = new Dygraph(document.getElementById("utomhus_temp_max_min_medel"),
+            "data/5637624.csv",
+            /*"X,Y,Z\n" +
+            "2018-03-01,1,1\n" +
+            "2018-03-02,14,14\n" +
+            "2018-03-03,4,4\n" +
+            "2018-03-04,6,6\n" +
+            "2018-03-05,3,3\n" +
+            "2018-03-06,11,11\n" +
+            "2018-03-07,12,12\n" +
+            "2018-03-08,10,10\n",
+            */
+            {
+
+                series: {
+                    /*"Z": {
+                      strokeWidth: 1
+                    },*/
+                    "Temperature": {
+                        plotter: yMeanPlotter
+                    }
+                },
+                resizable: "both",
+                rollPeriod: 0,
+                showRoller: true,
+                //showRangeSelector: true,
+                //valueRange: [-30,50],
+                //dateWindow: [ Date.parse("2017/01/01"), Date.parse("2019/07/26") ],
+                underlayCallback: function (ctx, area) {
+                    var min_and_max = calcMinMax(this),
+                        ymin = min_and_max[0],
+                        ymax = min_and_max[1],
+                        canvasYmin = this.toDomYCoord(ymin),
+                        canvasYmax = this.toDomYCoord(ymax);
+                    ctx.strokeStyle = 'red';
+                    ctx.beginPath();
+                    ctx.moveTo(area.x, canvasYmin);
+                    ctx.lineTo(area.x + area.w, canvasYmin);
+                    ctx.moveTo(area.x, canvasYmax);
+                    ctx.lineTo(area.x + area.w, canvasYmax);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+            });
+
+        function populate_local_storage_for_position() {
+            var file_url = "data/5637624.csv";
+            //var file_url = "data/pelle.csv";
+
+            var xhr = new XMLHttpRequest();
+            xhr.onload = parse_file_and_populate_local_storage;
+            let async = false; // Make XMLHttpRequest synchronous, TODO this is deprecated
+            xhr.open('GET', file_url, async);
+            xhr.send();
+        }
+
+        function generate_temperature_data() {
+            console.log("generate_temperature_data")
+            //table_id = this.extraInfo;
+            //console.log(table_id)
+
+            start_date = localStorage.getItem("START_DATE");
+            end_date = localStorage.getItem("END_DATE");
+            //console.log(start_date, end_date);
+            // formatted as 2022-02-02
+            start_year = start_date.split("-")[0];
+            end_year = end_date.split("-")[0];
+            res = "#Date,Temperature\n";
+            for (var year = start_year; year <= end_year; year++) {
+                for (var month = 1; month <= 12; month++) {
+                    for (var day = 1; day <= 31; day++) {
+                        date = year + "-" + format_with_two_characters(month) + "-" + format_with_two_characters(day);
+                        if (date >= start_date && date <= end_date) {
+                            var value = localStorage.getItem(date);
+                            if (value) {
+                                res = res + date + "," + value + "\n"
+                            } else {
+                                //console.log("Not defined for " + date);
+                            }
+                        }
+                    }
+                }
+            }
+            console.log("Return: (size=" + res.length + ")");
+            //console.log(res);
+            return res
+            //"Date,Temperature, TemperatureMin, TemperatureMax\n" +
+            // return "" +
+            //     "Date,Temperature" +
+            //     "2022-02-02,3.9;4.9;5.9\n" +
+            //     "2022-02-03,3.2;4.8;5.0\n" +
+            //     "2022-02-04,3.1;3.2;5.2\n" +
+            //     "2022-02-05,1.2;2.9;3.0\n" +
+            //     "2022-02-06,2.2;3.3;4.2\n" +
+            //     "2022-02-07,-2.2;1.4;3.0\n" +
+            //     "2022-02-08,-1.2;0.5;3.0\n" +
+            //     "2022-02-09,-1.2;0.5;1.5\n";
+        }
+
+        function get_html_for_sum(sum_months) {
+            var html = "<tr id=\"sum\">\
+                    <th>SUM</th>";
+
+            for (var month = 1; month <= 12; month++) {
+                value = round(sum_months[month], 1);
+                html += "<th>" + value + "</th>";
+            }
+            html += "</tr>"
+
+            return html;
+        }
+
+        function create_html_for_year(year) {
+            var html = "";
+            //var year_total = 0;
+            //var month_sums = { 1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 7: 0.0, 8: 0.0, 9: 0.0, 10: 0.0, 11: 0.0, 12: 0.0 };
+            end_date = localStorage.getItem("END_DATE")
+            end_year = parseInt(end_date.split("-")[0]);
+            for (var year = 2016; year <= end_year; year++) {
+                html += "<tr id=\"d" + year + "\">";
+                html += "<th>" + year + "</th>\r\n";
+                for (var month = 1; month <= 12; month++) {
+                    key = "" + year + format_with_two_characters(month);
+                    var values = localStorage.getItem(key)
+                    if (values) {
+                        // values="min,temp,max"
+                        min_val_max = values.split(",");
+                        min_val = min_val_max[0];
+                        val = parseFloat(min_val_max[1]).toFixed(1);
+                        max_val = min_val_max[2];
+                        //console.log("<td>" + min_val + "\\" + val + "\\" + max_val + "</td>")
+                        //html += "<td >" + "<b>" + val + "</b><br>min\:" + min_val + " max\:" + max_val + "</td>";
+                        // https://stackoverflow.com/questions/3881520/font-size-in-html-code
+                        html += "<td style=\"padding-left: 5px;padding-bottom: 3px;font-size: 14px;\">" + "<strong style=\"font-size: 18px;\">"
+                            + "medel:" + val + "</strong><br>min\:" + min_val + " max\:" + max_val + "</td>";
+
+                    } else {
+                        html += "<td data-pcp=\"-1\">x</td>";
+                    }
+
+                }
+                html += "</tr>";
+            }
+
+            //html += get_html_for_sum(month_sums);
+            //show_info(year);
+            //console.log(html);
+            return html;
+        }
+
+        function round(value, decimals) {
+            // From https://www.jacklmoore.com/notes/rounding-in-javascript/
+            return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+        }
+
+
+        function clear_element(id) {
+            var elem = document.getElementById(id);
+            elem.innerText = "";
+        }
+
+        function create_rain_year_html_table(year) {
+            clear_element('my_table');
+
+            var table_head_html = '<thead>\
+                <tr> <th>&nbsp;</th> <th>Jan</th> <th>Feb</th> <th>Mar</th> <th>Apr</th>\
+                <th>Maj</th> <th>Jun</th> <th>Jul</th> <th>Aug</th>\
+                <th>Sep</th> <th>Okt</th> <th>Nov</th> <th>Dec</th> </tr>\
+            </thead>'
+
+            document.getElementById('my_table').innerHTML += table_head_html;
+            var table_content_html = create_html_for_year(year);
+            document.getElementById('my_table').innerHTML += table_content_html;
+
+        }
+
+        function get_storage_size() {
+            // From https://stackoverflow.com/questions/4391575/how-to-find-the-size-of-localstorage
+            var allStrings = '';
+            for (var key in window.localStorage) {
+                if (window.localStorage.hasOwnProperty(key)) {
+                    allStrings += window.localStorage[key];
+                }
+            }
+            size = 3 + ((allStrings.length * 16) / (8 * 1024));
+            return allStrings ? size.toFixed(3) + ' KB' : 'Empty (0 KB)';
+        }
+
+        function show_debug_info() {
+            var localStorageSpace = get_storage_size();
+            console.log("localStorageSpace=" + localStorageSpace);
+            debug_elem = document.getElementById("debug_info");
+            debug_elem.innerHTML = `Data Size: ${localStorageSpace}`
+        }
+
+        function clear_local_storage_if_needed(position) {
+            last_position = localStorage.getItem('position')
+            if (last_position != position) {
+                localStorage.clear()
+                console.log("Localstorage cleared since changed from " + last_position + " to " + position);
+            } else {
+                console.log('Same position -> No Clear');
+            }
+        }
+
+        function format_with_two_characters(month) {
+            if (month < 10) {
+                return "0" + month;
+            }
+            return "" + month;
+        }
+
+        function parse_file_and_populate_local_storage() {
+            var content = this.responseText.split('\r\n');
+            if (content.length == 1) { // Probably linux file
+                content = this.responseText.split('\n');
+            }
+            var index = 0;
+            prev_date = "";
+            max = -100;
+            min = 100;
+
+            monthly_max = -100;
+            monthly_min = 100;
+            monthly_average = 0;
+            monthly_count = 0;
+            monthly_values = 0;
+            prev_month = "";
+            prev_year = "2016";
+
+            average = 0;
+            count = 0;
+            values = 0;
+            start_date = "";
+            end_date = ""
+
+            //console.log(content);
+            for (index = 1; index < content.length; ++index) {
+                // Formatted as 2023-10-27 00:59:07,4.8
+                if (content[index] != "") {
+                    timestamp_value = content[index].split(',');
+                    date_time = timestamp_value[0].split(" ");
+                    value = parseFloat(timestamp_value[1])
+                    date = date_time[0];
+                    year_month_day = date.split("-");
+
+                    year = year_month_day[0]
+                    month = year_month_day[1]
+
+                    // Store all values? Or calculate what we want instead
+                    //localStorage.setItem(date_time, value);
+                    //console.log(content[index]);
+                    //console.log("MONTH " + month + " PREV_MONTH" + prev_month);
+                    if (month != prev_month) {
+                        if (monthly_count != 0) {
+                            monthly_average = monthly_values / monthly_count;
+                            //monthly_average = monthly_average.toFixed(2); // toFixed converts to string
+                            //console.log("AAAAAAAAAAAAAAAAAAAAAAAdd monthly");
+                            //console.log(year + prev_month, [monthly_min, monthly_average, monthly_max]);
+                            localStorage.setItem(prev_year + prev_month, [monthly_min, monthly_average, monthly_max])
+
+                            monthly_average = 0;
+                            monthly_count = 0;
+                            monthly_max = -100;
+                            monthly_min = 100;
+                            monthly_values = 0;
+                        }
+                        prev_month = month;
+                        prev_year = year;
+                    }
+                    monthly_values = monthly_values + value;
+                    monthly_count = monthly_count + 1;
+
+                    if (value > monthly_max) {
+                        monthly_max = value;
+                    }
+                    if (value < monthly_min) {
+                        monthly_min = value;
+                    }
+
+                    if (year == "2023" && month == "06") {
+                        //console.log("MONTHY " + date + " value=" + value + " max = " + monthly_max + " min = " + monthly_min);
+                    }
+
+                    if (date != prev_date) {
+                        if (count != 0) {
+                            average = values / count;
+                            //average = average.toFixed(2);
+                            //console.log("Average:" + values + " count " + count);
+                            //console.log(prev_date, min + ";" + average + ";" + max + "\n")
+                            localStorage.setItem(prev_date, min + ";" + average + ";" + max + "\n")
+                            average = 0;
+                            count = 0;
+                            max = -100;
+                            min = 100;
+                            values = 0;
+                        }
+                        prev_date = date;
+                    }
+
+                    if (start_date == "") {
+                        start_date = date;
+                    }
+                    end_date = date;
+
+                    if (value > max) {
+                        max = value;
+                    }
+                    if (value < min) {
+                        min = value;
+                    }
+
+                    values = values + value;
+                    count = count + 1;
+                    //console.log("Add " + date + " " + value);
+                }
+            }
+
+            average = values / count;
+            average = average.toFixed(2);
+            console.log("LAST Average:" + values + " count " + count);
+            console.log(date, min + ";" + average + ";" + max + "\n")
+            console.log();
+            localStorage.setItem(date, min + ";" + average + ";" + max + "\n")
+
+            monthly_average = monthly_values / monthly_count;
+            //monthly_average = monthly_average.toFixed(2);
+            console.log("LAST monthly");
+            console.log(year + month, [monthly_min, monthly_average, monthly_max]);
+            console.log();
+            localStorage.setItem(year + month, [monthly_min, monthly_average, monthly_max])
+
+            localStorage.setItem("START_DATE", start_date)
+            localStorage.setItem("END_DATE", end_date)
+            console.log("start_date=" + start_date + " end_date=" + end_date);
+
+            g1 = new Dygraph(document.getElementById("utomhus_temp2"),
+                generate_temperature_data,
+                {
+                    //showRangeSelector: true
+                    resizable: "both",
+                    legend: 'always',
+                    customBars: true,
+                    title: 'Daglig temperatur med max/min',
+                    ylabel: 'Temperatur (C)',
+                });
+
+
+            create_rain_year_html_table();
+            show_debug_info();
+
+        }
+
+    </script>
+</body>
+
+</html>
