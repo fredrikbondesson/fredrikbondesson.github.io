@@ -376,85 +376,93 @@
             start_date = "";
             end_date = ""
 
+            prev_timestamp = "";
+
             //console.log(content);
             for (index = 1; index < content.length; ++index) {
                 // Formatted as 2023-10-27 00:59:07,4.8
                 if (content[index] != "") {
                     timestamp_value = content[index].split(',');
-                    date_time = timestamp_value[0].split(" ");
-                    value = parseFloat(timestamp_value[1])
-                    date = date_time[0];
-                    year_month_day = date.split("-");
+                    timestamp = timestamp_value[0]
+                    if (timestamp != prev_timestamp) {
+                        prev_timestamp = timestamp
+                        date_time = timestamp_value[0].split(" ");
+                        value = parseFloat(timestamp_value[1])
+                        date = date_time[0];
+                        year_month_day = date.split("-");
 
-                    year = year_month_day[0]
-                    month = year_month_day[1]
+                        year = year_month_day[0]
+                        month = year_month_day[1]
 
-                    // Store all values? Or calculate what we want instead
-                    //localStorage.setItem(date_time, value);
-                    //console.log(content[index]);
-                    //console.log("MONTH " + month + " PREV_MONTH" + prev_month);
-                    if (month != prev_month) {
-                        if (monthly_count != 0) {
-                            monthly_average = monthly_values / monthly_count;
-                            //monthly_average = monthly_average.toFixed(2); // toFixed converts to string
-                            //console.log("AAAAAAAAAAAAAAAAAAAAAAAdd monthly");
-                            //console.log(year + prev_month, [monthly_min, monthly_average, monthly_max]);
-                            localStorage.setItem(prev_year + prev_month, [monthly_min, monthly_average, monthly_max])
+                        // Store all values? Or calculate what we want instead
+                        //localStorage.setItem(date_time, value);
+                        //console.log(content[index]);
+                        //console.log("MONTH " + month + " PREV_MONTH" + prev_month);
+                        if (month != prev_month) {
+                            if (monthly_count != 0) {
+                                monthly_average = monthly_values / monthly_count;
+                                //monthly_average = monthly_average.toFixed(2); // toFixed converts to string
+                                //console.log("AAAAAAAAAAAAAAAAAAAAAAAdd monthly");
+                                //console.log(year + prev_month, [monthly_min, monthly_average, monthly_max]);
+                                localStorage.setItem(prev_year + prev_month, [monthly_min, monthly_average, monthly_max])
 
-                            monthly_average = 0;
-                            monthly_count = 0;
-                            monthly_max = -100;
-                            monthly_min = 100;
-                            monthly_values = 0;
+                                monthly_average = 0;
+                                monthly_count = 0;
+                                monthly_max = -100;
+                                monthly_min = 100;
+                                monthly_values = 0;
+                            }
+                            prev_month = month;
+                            prev_year = year;
                         }
-                        prev_month = month;
-                        prev_year = year;
-                    }
-                    monthly_values = monthly_values + value;
-                    monthly_count = monthly_count + 1;
+                        monthly_values = monthly_values + value;
+                        monthly_count = monthly_count + 1;
 
-                    if (value > monthly_max) {
-                        monthly_max = value;
-                    }
-                    if (value < monthly_min) {
-                        monthly_min = value;
-                    }
-
-                    if (year == "2023" && month == "06") {
-                        //console.log("MONTHY " + date + " value=" + value + " max = " + monthly_max + " min = " + monthly_min);
-                    }
-
-                    if (date != prev_date) {
-                        if (count != 0) {
-                            average = values / count;
-                            //average = average.toFixed(2);
-                            //console.log("Average:" + values + " count " + count);
-                            //console.log(prev_date, min + ";" + average + ";" + max + "\n")
-                            localStorage.setItem(prev_date, min + ";" + average + ";" + max + "\n")
-                            average = 0;
-                            count = 0;
-                            max = -100;
-                            min = 100;
-                            values = 0;
+                        if (value > monthly_max) {
+                            monthly_max = value;
                         }
-                        prev_date = date;
-                    }
+                        if (value < monthly_min) {
+                            monthly_min = value;
+                        }
 
-                    if (start_date == "") {
-                        start_date = date;
-                    }
-                    end_date = date;
+                        if (year == "2023" && month == "06") {
+                            //console.log("MONTHY " + date + " value=" + value + " max = " + monthly_max + " min = " + monthly_min);
+                        }
 
-                    if (value > max) {
-                        max = value;
-                    }
-                    if (value < min) {
-                        min = value;
-                    }
+                        if (date != prev_date) {
+                            if (count != 0) {
+                                average = values / count;
+                                //average = average.toFixed(2);
+                                //console.log("Average:" + values + " count " + count);
+                                //console.log(prev_date, min + ";" + average + ";" + max + "\n")
+                                localStorage.setItem(prev_date, min + ";" + average + ";" + max + "\n")
+                                average = 0;
+                                count = 0;
+                                max = -100;
+                                min = 100;
+                                values = 0;
+                            }
+                            prev_date = date;
+                        }
 
-                    values = values + value;
-                    count = count + 1;
-                    //console.log("Add " + date + " " + value);
+                        if (start_date == "") {
+                            start_date = date;
+                        }
+                        end_date = date;
+
+                        if (value > max) {
+                            max = value;
+                        }
+                        if (value < min) {
+                            min = value;
+                        }
+
+                        values = values + value;
+                        count = count + 1;
+                        //console.log("Add " + date + " " + value);
+                    } else {
+                        console.log("Same timestamp " + timestamp + " " + prev_timestamp);
+                    }
                 }
             }
 
