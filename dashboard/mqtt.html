@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="images/favicon.png" type="image/png" />
+    <title>Raspberry Pi Dashboard</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #003366;
+            --card-bg: #0055aa;
+            --text: white;
+        }
+
+        body.light {
+            --bg: #f4f4f4;
+            --card-bg: #ffffff;
+            --text: #222;
+        }
+
+        body {
+            font-family: sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            margin: 1rem;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transition: background 0.3s;
+
+            background-color: var(--main-bg-color);
+            background: linear-gradient(to bottom, rgba(0, 102, 255, 1), rgba(0, 102, 255, 0.5));
+            /* padding: 1px; */
+            color: #ffffff;
+            text-align: center;
+            /* font-size: 14px; */
+            box-shadow: 0 5px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+
+        }
+
+        .title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        #theme-toggle {
+            margin: 1rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            background: #ffffff33;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        canvas {
+            max-width: 100%;
+        }
+
+        .my_block {
+            background-color: var(--main-bg-color);
+            background: linear-gradient(to bottom, rgba(0, 102, 255, 1), rgba(0, 102, 255, 0.5));
+            padding: 1px;
+            color: #ffffff;
+            text-align: center;
+            font-size: 14px;
+            box-shadow: 0 5px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>📊 Raspberry Pi Dashboard</h1>
+    <button id="theme-toggle">🌓 Växla tema</button>
+
+    <div class="card">
+        <div class="title">CPU Load (1s):</div>
+        <div class="value" id="cpu-load">–</div>
+        <div class="title">Senaste tid (rpi5/cpu/time):</div>
+        <div class="value" id="cpu-time">–</div>
+    </div>
+
+    <div class="card">
+        <div class="title">Temperature:</div>
+        <div class="value" id="temperature">–</div>
+        <div class="title">Senaste tid (rpi5/temperature/time):</div>
+        <div class="value" id="temperature-time">–</div>
+    </div>
+
+    <div class="card">
+        <div class="title">Historik CPU Load</div>
+        <canvas id="loadChart" height="150"></canvas>
+    </div>
+
+    <div class="card">
+        <div class="title">kW:</div>
+        <div class="value" id="kwatt">–</div>
+        <div class="title">Total(kWh):</div>
+        <div class="value" id="watt-hours">–</div>
+        <div class="title">Senaste tid (currently/one/state t):</div>
+        <div class="value" id="kwatt-time">–</div>
+    </div>
+
+    <script>
+        // MQTT-anslutning
+        const client = mqtt.connect('ws://192.168.2.176:9001', {
+            username: 'mqttuser',
+            password: 'mqttuser'
+        });
+
+        const maxPoints = 20;
+        const loadData = {
+            labels: [],
+            datasets: [
+                {
+                    label: 'CPU Load %',
+                    data: [],
+                    borderColor: '#00ccff',
+                    backgroundColor: 'rgba(0,204,255,0.1)',
+                    //color: '#ffffff',
+                    yAxisID: 'yLoad',
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: 'Temperatur (°C)',
+                    data: [],
+                    borderColor: '#ff4444',
+                    backgroundColor: 'rgba(255,68,68,0.1)',
+                    //color: '#ffffff',
+                    yAxisID: 'yTemp',
+                    tension: 0.3,
+                    fill: true
+                }
+            ]
+        };
+
+        const chartConfig = {
+            type: 'line',
+            data: loadData,
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: { display: true }
+                },
+                scales: {
+                    yLoad: {
+                        type: 'linear',
+                        position: 'left',
+                        title: { display: true, text: 'CPU Load (%)' },
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            callback: val => `${val}%`
+                        }
+                    },
+                    yTemp: {
+                        type: 'linear',
+                        position: 'right',
+                        title: { display: true, text: 'Temperatur (°C)' },
+                        min: 0,
+                        max: 70,
+                        grid: { drawOnChartArea: false } // separera grid för tydlighet
+                    }
+                }
+            }
+        };
+
+        const loadChart = new Chart(
+            document.getElementById('loadChart'),
+            chartConfig
+        );
+
+        client.on('connect', () => {
+            console.log("✅ Ansluten till MQTT broker");
+            //client.subscribe('rpi5/cpu/time');
+            //client.subscribe('rpi5/cpu/avg_load_1s');
+            //client.subscribe('rpi5/temperature/temp');
+            client.subscribe('rpi5/#');
+            client.subscribe('currently/one/1c83fb0cdadc/#');
+        });
+
+        client.on('message', (topic, message) => {
+            const payload = message.toString();
+
+            if (topic === 'currently/one/1c83fb0cdadc/state') {
+                const json_data = JSON.parse(message.toString());
+                const watt = json_data.W;
+                const iso_time = json_data.t;
+                const watt_hours = json_data.Wh;
+
+                //const isoTime = "2025-07-01T15:20:13+0100";
+                const corrected = iso_time.replace(/(\+\d{2})(\d{2})$/, '$1:$2');
+                const date = new Date(corrected);
+                // Exakt format: "2025-07-01 16:20:13"
+                const formattedTime = date.toLocaleString('sv-SE', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+
+                // console.log(`Effekt: ${watt} W`);
+                // console.log(`Time: ${watt_time} t`);
+                // console.log(formattedTime);  // ➜ 2025-07-01 16:20:13
+
+                document.getElementById('kwatt-time').textContent = formattedTime;
+                document.getElementById('kwatt').textContent = watt;
+                document.getElementById('watt-hours').textContent = watt_hours;
+            }
+
+            if (topic === 'rpi5/temperature/time') {
+                document.getElementById('temperature-time').textContent = payload;
+            } else if (topic === 'rpi5/temperature/temp') {
+                document.getElementById('temperature').textContent = payload;
+            }
+
+            if (topic === 'rpi5/cpu/time') {
+                document.getElementById('cpu-time').textContent = payload;
+            }
+
+            if (topic === 'rpi5/cpu/avg_load_1s') {
+                document.getElementById('cpu-load').textContent = payload;
+            }
+
+            if (topic === 'rpi5/cpu/avg_load_1s' || topic === 'rpi5/temperature/temp') {
+                const now = new Date();
+                const timeLabel = now.toLocaleTimeString();
+
+                // lägg till ny tid om inte redan där
+                if (!loadData.labels.includes(timeLabel)) {
+                    if (loadData.labels.length >= maxPoints) {
+                        loadData.labels.shift();
+                        loadData.datasets[0].data.shift();
+                        loadData.datasets[1].data.shift();
+                    }
+
+                    loadData.labels.push(timeLabel);
+                    // push placeholder om bara en av två topics kommer in först
+                    if (topic === 'rpi5/cpu/avg_load_1s') {
+                        const cpuLoad = parseFloat(payload.replace('%', ''));
+                        loadData.datasets[0].data.push(cpuLoad);
+                        loadData.datasets[1].data.push(null);
+                    } else {
+                        const temp = parseFloat(payload);
+                        loadData.datasets[0].data.push(null);
+                        loadData.datasets[1].data.push(temp);
+                    }
+                } else {
+                    // Skriv över null med rätt värde i senaste datapunkt
+                    const lastIndex = loadData.labels.length - 1;
+                    if (topic === 'rpi5/cpu/avg_load_1s') {
+                        const cpuLoad = parseFloat(payload.replace('%', ''));
+                        loadData.datasets[0].data[lastIndex] = cpuLoad;
+                    } else if (topic === 'rpi5/temperature/temp') {
+                        const temp = parseFloat(payload);
+                        loadData.datasets[1].data[lastIndex] = temp;
+                    }
+                }
+
+                loadChart.update();
+            }
+        });
+
+        // 🌓 Tema-växling
+        const toggleBtn = document.getElementById('theme-toggle');
+        toggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light');
+        });
+    </script>
+
+
+</body>
+
+</html>

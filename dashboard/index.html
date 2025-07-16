@@ -356,7 +356,7 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
   <script>
 
     function rotate_wind_icon(deg, element_id) {
-      console.log("rotate_wind_icon " + element_id + " " + deg);
+      //console.log("rotate_wind_icon " + element_id + " " + deg);
       //element = document.getElementById('wind_landvetter_icon');
       element = document.getElementById(element_id);
       element.style.transform = "rotate(" + deg + "deg)";
@@ -421,7 +421,7 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
         }
 
         // Wind direction icon
-        console.log("element_id5=" + element_id5);
+        //console.log("element_id5=" + element_id5);
         if (element_id5.includes('landvetter')) {
           rotate_wind_icon(parseInt(field5), 'wind_landvetter_icon');
         } else {
@@ -444,10 +444,10 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
     populateElementsFromFileUrl('../data/5637624_latest.csv', "Time: ", 'date_5637624', " C", "temp_5637624", null, null, null, null);
     populateElementsFromFileUrl('../data/4577697_latest.csv', "Time: ", 'date_4577697', " C", "temp_4577697", " %", "humidity_4577697", null, null);
     // populateElementsFromFileUrl('../data/2398251_latest.csv', "Time: ", 'date_2398251', " C", "temp_2398251", " %", "humidity_2398251", null, null);
-    
+
     populateElementsFromFileUrl('../data/1527818655_latest.csv', "Time: ", 'date_1527818655', " C", "temp_1527818655", " %", "humidity_1527818655", null, null);
-    
-    
+
+
     populateElementsFromFileUrl('../data/5637622_latest.csv', "Time: ", 'date_5637622', " C", "temp_5637622", " %", "humidity_5637622", null, null);
     //populateElementsFromFileUrl('../data/abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
     //populateElementsFromFileUrl('../data/abroo_weather_data_latest.csv', "Time: ", 'date_abroo', " C", "temp_abroo", " %", "humidity_abroo", null, null);
@@ -462,13 +462,13 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
         json: "true"
       })
         .done(function (data) {
-          console.log(data);
+          //console.log(data);
           $.each(data, function (i, item) {
-            console.log(i);
-            console.log(item[0]);
-            console.log(item[1]);
-            console.log(Date.now())
-            console.log(Date.parse(item[1]))
+            // console.log(i);
+            // console.log(item[0]);
+            // console.log(item[1]);
+            // console.log(Date.now())
+            // console.log(Date.parse(item[1]))
             //Convert "2023-08-08 17:36:06"; -> "2023-08-08T17:36:06Z";
             var timestr = item[1].replaceAt(10, "T");
             timestr = timestr.concat("Z")
@@ -602,15 +602,6 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
     </div>
   </a>
 
-  <form action="../php/commands.php?ring_door_bell" method="post" id="door_bell_on_form">
-  </form>
-
-  <form action="../php/commands.php?turn_on_lamp_673068" method="post" id="lamp_on_form">
-  </form>
-
-  <form action="../php/commands.php?turn_off_lamp_673068" method="post" id="lamp_off_form">
-  </form>
-
   <a href="./trafik_info.html">
     <div class="col-2">
       <div class="my_block">
@@ -673,73 +664,100 @@ http://www.dreamincode.net/forums/topic/325211-getting-buttons-on-the-same-line/
     </div>
   </a>
 
+  <!-- $("#ping_result").append("<div class=\"col-3 col-m-12\">" +
+              "<div class=\"my_block\">" +
+              "<h2>" + item[0] + "</h2>" + -->
 
-  <a href="https://fredrikbond.eu.pythonanywhere.com/ping_result">
-    <div id="ping_result"">
-    <!-- Is popopulated by the json result in scripts part -->
+  <a href="./mqtt.html">
+    <div class="col-3 col-m-12">
+      <div class="my_block">
+        <br>
+        <h2>Mqtt</h2> <br>
+      </div>
     </div>
   </a>
-  <div class=" col-3">
-      <div class="my_button_block">
-        <a>Doorbell</a>
-        <button id="on_button" type="submit" form="door_bell_on_form">Ring</button>
-      </div>
+
+
+  <a href="https://fredrikbond.eu.pythonanywhere.com/ping_result">
+    <div id="ping_result">
+      <!-- Is popopulated by the json result in scripts part -->
     </div>
-    <div class="col-3">
-      <div class="my_button_block">
-        <a>Vardrum1(675389)</a>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_on_lamp_675389">Turn On</button>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_off_lamp_675389">Turn Off</button>
+  </a>
+
+  <!--
+  <form action=" ../php/commands.php?ring_door_bell" method="post" id="door_bell_on_form">
+      </form>
+
+      <form action="../php/commands.php?turn_on_lamp_673068" method="post" id="lamp_on_form">
+      </form>
+
+      <form action="../php/commands.php?turn_off_lamp_673068" method="post" id="lamp_off_form">
+      </form>
+      -->
+
+  <!--
+      <div class=" col-3">
+        <div class="my_button_block">
+          <a>Doorbell</a>
+          <button id="on_button" type="submit" form="door_bell_on_form">Ring</button>
+        </div>
       </div>
-    </div>
-    <div class="col-3">
-      <div class="my_button_block">
-        <a>Vardrum2(675390)</a>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_on_lamp_675390">Turn On</button>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_off_lamp_675390">Turn Off</button>
+      <div class="col-3">
+        <div class="my_button_block">
+          <a>Vardrum1(675389)</a>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_on_lamp_675389">Turn On</button>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_off_lamp_675389">Turn Off</button>
+        </div>
       </div>
-    </div>
-    <div class="col-3">
-      <div class="my_button_block">
-        <a>Vardrum3(3015089)</a>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_on_lamp_3015089">Turn On</button>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_off_lamp_3015089">Turn Off</button>
+      <div class="col-3">
+        <div class="my_button_block">
+          <a>Vardrum2(675390)</a>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_on_lamp_675390">Turn On</button>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_off_lamp_675390">Turn Off</button>
+        </div>
       </div>
-    </div>
-    <div class="col-3">
-      <div class="my_button_block">
-        <a>Kontor(673068)</a>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_on_lamp_673068">Turn On</button>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_off_lamp_673068">Turn Off</button>
+      <div class="col-3">
+        <div class="my_button_block">
+          <a>Vardrum3(3015089)</a>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_on_lamp_3015089">Turn On</button>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_off_lamp_3015089">Turn Off</button>
+        </div>
       </div>
-    </div>
-    <div class="col-3">
-      <div class="my_button_block">
-        <a>Ute(2871639)</a>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_on_lamp_2871639">Turn On</button>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_off_lamp_2871639">Turn Off</button>
+      <div class="col-3">
+        <div class="my_button_block">
+          <a>Kontor(673068)</a>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_on_lamp_673068">Turn On</button>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_off_lamp_673068">Turn Off</button>
+        </div>
       </div>
-    </div>
-    <div class="col-3">
-      <div class="my_button_block">
-        <a>Kök(3015075)</a>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_on_lamp_3015075">Turn On</button>
-        <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
-          formaction="../php/commands.php?turn_off_lamp_3015075">Turn Off</button>
+      <div class="col-3">
+        <div class="my_button_block">
+          <a>Ute(2871639)</a>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_on_lamp_2871639">Turn On</button>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_off_lamp_2871639">Turn Off</button>
+        </div>
       </div>
-    </div>
-    <!--
+      <div class="col-3">
+        <div class="my_button_block">
+          <a>Kök(3015075)</a>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_on_lamp_3015075">Turn On</button>
+          <button id="on_button" type="submit" form="lamp_on_form" formmethod="post"
+            formaction="../php/commands.php?turn_off_lamp_3015075">Turn Off</button>
+        </div>
+      </div>
+      -->
+  <!--
 </div>
 -->
 </body>
