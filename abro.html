@@ -1,123 +1,129 @@
 ﻿<html>
+
 <head>
-<!--<script type="text/javascript" src="dygraph-combined.js"></script>-->
-<link rel="stylesheet" href="dygraph.css">
-<link rel="icon" href="dashboard/images/favicon.png" type="image/png" />
-<script type="text/javascript" src="dygraph.min.js"></script>
-<title>Vaderstation Abro</title>
+	<!--<script type="text/javascript" src="dygraph-combined.js"></script>-->
+	<link rel="stylesheet" href="dygraph.css">
+	<link rel="icon" href="dashboard/images/favicon.png" type="image/png" />
+	<script type="text/javascript" src="dygraph.min.js"></script>
+	<title>Vaderstation Abro</title>
 </head>
+
 <body>
 
 
-<a href="https://thingspeak.mathworks.com/channels">Thingspeek at Mathworks</a>
-<br>
-<a href="smhi_rain.html">SMHI Opendata Kållered Nederbörd </a>
-<br>
-<a href="https://fredrikbond.eu.pythonanywhere.com/rain_result">SMHI Opendata Kållered Nederbörd(rain_result)</a>
-<br>
-<a href="https://fredrikbond.eu.pythonanywhere.com/sun_result">SMHI Opendata Göteborg Soltimmar</a>
-<br>
-<a href="http://www.vackertvader.se/v%C3%A4derstation/%C3%A5bro">Vaderstation Abro</a>
-<br>
-<a href="https://m.vackertvader.se/v%C3%A4derstation/%C3%A5bro">Vaderstation Abro Mobil</a>
-<br>
-<a href="https://www.vackertvader.se/v%C3%A4derstation/g%C3%B6teborg-landvetter">Vaderstation Landvetter</a>
-<br>
-<a href="https://www.kalleredidag.se/">Kållered Idag</a>
-<br>
-<a href="http://www.temperatur.nu/kallered.html">Vaderstation Kallered</a>
-<!-- Temperatur från temperatur.nu -->
-<script type="text/javascript" src="http://www.temperatur.nu/jstemp.php?s=kallered"></script>
-<br>
-<a href="http://www.temperatur.nu/kallered_backen.html">Vaderstation Kallered/Backen</a>
-<script type="text/javascript" src="http://www.temperatur.nu/jstemp.php?s=kallered_backen"></script>
-<br>
-<a href="http://www.temperatur.nu/kallered_backen.html">Vaderstation Goteborg/Lindome2</a>
-<script type="text/javascript" src="http://www.temperatur.nu/jstemp.php?s=lindome2"></script>
+	<a href="https://thingspeak.mathworks.com/channels">Thingspeek at Mathworks</a>
+	<br>
+	<a href="smhi_rain.html">SMHI Opendata Kållered Nederbörd </a>
+	<br>
+	<a href="https://fredrikbond.eu.pythonanywhere.com/rain_result">SMHI Opendata Kållered Nederbörd(rain_result)</a>
+	<br>
+	<a href="https://fredrikbond.eu.pythonanywhere.com/sun_result">SMHI Opendata Göteborg Soltimmar</a>
+	<br>
+	<a href="http://www.vackertvader.se/v%C3%A4derstation/%C3%A5bro">Vaderstation Abro</a>
+	<br>
+	<a href="https://m.vackertvader.se/v%C3%A4derstation/%C3%A5bro">Vaderstation Abro Mobil</a>
+	<br>
+	<a href="https://www.vackertvader.se/v%C3%A4derstation/g%C3%B6teborg-landvetter">Vaderstation Landvetter</a>
+	<br>
+	<a href="https://www.kalleredidag.se/">Kållered Idag</a>
+	<br>
+	<a href="https://www.temperatur.nu/kallered.html">Vaderstation Kallered</a>
+	<!-- Temperatur från temperatur.nu -->
+	<script type="text/javascript" src="http://www.temperatur.nu/jstemp.php?s=kallered"></script>
+	<br>
+	<a href="https://www.temperatur.nu/lindome2">Vaderstation Goteborg/Lindome2</a>
+	<script type="text/javascript" src="http://www.temperatur.nu/jstemp.php?s=lindome2"></script>
+    <br>
+	<a href="https://www.temperatur.nu/kallered_backen.html">Vaderstation Kallered/Backen</a>
+	<script type="text/javascript" src="http://www.temperatur.nu/jstemp.php?s=kallered_backen"></script>
 
 
-<br>
-<a href="https://rl.se/goteborg">rl.se for Goteborg</a>
-<br>
+	<br>
+	<a href="https://rl.se/goteborg">rl.se for Goteborg</a>
+	<br>
 
-<br>
-<a href="https://www.smhi.se/klimat/klimatet-da-och-nu/hur-var-vadret/q/G%C3%B6teborg/temperature">SMHI Hur var vädret i Göteborg</a>
-<br>
+	<br>
+	<a href="https://www.smhi.se/klimat/klimatet-da-och-nu/hur-var-vadret/q/G%C3%B6teborg/temperature">SMHI Hur var
+		vädret i Göteborg</a>
+	<br>
 
-<h2 id="abro_title">Vaderstation Abro</h2>
-<div id="graphdiv1" style="width:600px; height:300px;"></div>
+	<h2 id="abro_title">Vaderstation Abro</h2>
+	<div id="graphdiv1" style="width:600px; height:300px;"></div>
 
-<script type="text/javascript">
-  g1 = new Dygraph(document.getElementById("graphdiv1"),
-	"data/abroo_weather_data.csv",
-	{
-	 showRangeSelector:true,
-   title: "Temperature/Humidity",
-   ylabel: 'Temperatur/Luftfuktighet',
-   xlabel: "Tidpunkt",
-	});
-</script>
+	<script type="text/javascript">
+		g1 = new Dygraph(document.getElementById("graphdiv1"),
+			"data/abroo_weather_data_trafikverket.csv",
+			{
+				showRangeSelector: true,
+				title: "Temperature/Humidity",
+				ylabel: 'Temperatur/Luftfuktighet',
+				xlabel: "Tidpunkt",
+			});
+	</script>
 
-<h2 id="abro_title">Vaderstation Abro - Wind</h2>
-<h5 id="">Timestamp, Wind, Wind Direction</>
-<h6 id="">(0 - from north, 90°	from east, 180 from south)</>
-<div id="graphdiv_wind" style="width:600px; height:300px;"></div>
+	<!--
+	<h2 id="abro_title">Vaderstation Abro - Wind</h2>
+	<h5 id="">Timestamp, Wind, Wind Direction</>
+		<h6 id="">(0 - from north, 90° from east, 180 from south)</>
+			<div id="graphdiv_wind" style="width:600px; height:300px;"></div>
 
-<script type="text/javascript">
-  g1 = new Dygraph(document.getElementById("graphdiv_wind"),
-	"data/wind_abroo_weather_data.csv",
-	{
-	 showRangeSelector:true,
-   title: "Wind",
-   xlabel: "Tidpunkt",
-	});
-</script>
+			<script type="text/javascript">
+				g1 = new Dygraph(document.getElementById("graphdiv_wind"),
+					"data/wind_abroo_weather_data.csv",
+					{
+						showRangeSelector: true,
+						title: "Wind",
+						xlabel: "Tidpunkt",
+					});
+			</script>
+-->
+	<h2 id="abro_all_title">Vaderstation Abro All</h2>
+	<h5 id="">Timestamp,Temperature,Humidity,TEMPERATURE_ROAD,RAIN</h5>
+	<div id="graphdiv2" style="width:600px; height:300px;"></div>
 
-<h2 id="abro_all_title">Vaderstation Abro All</h2>
-<h5 id="">Timestamp,Temperature,Humidity,TEMPERATURE_ROAD,RAIN,MAX,MIN</h5>
-<div id="graphdiv2" style="width:600px; height:300px;"></div>
+	<script type="text/javascript">
+		g1 = new Dygraph(document.getElementById("graphdiv2"),
+			"data/all_abroo_weather_data_trafikverket.csv",
+			{
+				showRangeSelector: true,
+				xlabel: "Tidpunkt",
+			});
+	</script>
+	<br>
 
-<script type="text/javascript">
-  g1 = new Dygraph(document.getElementById("graphdiv2"),
-	"data/all_abroo_weather_data.csv",
-	{
-	 showRangeSelector:true,
-   xlabel: "Tidpunkt",
-	});
-</script>
-<br>
+	<h2 id="abro_rain_title">Vaderstation Abro Rain</h2>
+	<h5 id="">Timestamp,RAIN</h5>
+	<div id="graphdiv3" style="width:600px; height:300px;"></div>
 
-<h2 id="abro_rain_title">Vaderstation Abro Rain</h2>
-<h5 id="">Timestamp,RAIN</h5>
-<div id="graphdiv3" style="width:600px; height:300px;"></div>
+	<script type="text/javascript">
+		g1 = new Dygraph(document.getElementById("graphdiv3"),
+			"data/rain_abroo_weather_data_trafikverket.csv",
+			{
+				showRangeSelector: true,
+				xlabel: "Tidpunkt",
+			});
+	</script>
+	<br>
+	<br>
 
-<script type="text/javascript">
-  g1 = new Dygraph(document.getElementById("graphdiv3"),
-	"data/rain_abroo_weather_data.csv",
-	{
-	 showRangeSelector:true,
-   xlabel: "Tidpunkt",
-	});
-</script>
-<br>
-<br>
 
-<h2 id="landvetter">Landvetter</h2>
-<h5 id="">Timestamp,Temperature, Wind, Wind Direction</>
-<h6 id="">(0 - from north, 90°	from east, 180 from south)</>
-<div id="graphdiv4" style="width:600px; height:300px;"></div>
+	<h2 id="landvetter">Landvetter</h2>
+	<h5 id="">Timestamp,Temperature, Wind, Wind Direction</>
+		<h6 id="">(0 - from north, 90° from east, 180 from south)</>
+			<div id="graphdiv4" style="width:600px; height:300px;"></div>
 
-<script type="text/javascript">
-  g1 = new Dygraph(document.getElementById("graphdiv4"),
-	"data/landvetter_weather_data.csv",
-	{
-	 showRangeSelector:true,
-   xlabel: "Tidpunkt",
-	});
-</script>
-<br>
-<br>
+			<script type="text/javascript">
+				g1 = new Dygraph(document.getElementById("graphdiv4"),
+					"data/landvetter_weather_data_metar.csv",
+					{
+						showRangeSelector: true,
+						xlabel: "Tidpunkt",
+					});
+			</script>
+			<br>
+			<br>
 
 
 </body>
+
 </html>
